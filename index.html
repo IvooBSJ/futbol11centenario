@@ -20,7 +20,7 @@ nav button.on{background:linear-gradient(135deg,var(--gold),#c98f10);color:#111}
 .av{width:100%;aspect-ratio:1;border-radius:50%;border:3px solid var(--c);background:#16161c center/cover;box-shadow:0 3px 10px #000a;display:grid;place-items:center;overflow:hidden;transition:transform .15s}
 .p:hover .av{transform:scale(1.1)}
 .av svg{width:70%;fill:var(--c);opacity:.8}
-.nm{width:max-content;max-width:170%;margin-top:3px;background:linear-gradient(#e8e8ee,#aaa);color:#111;font:800 clamp(8px,1.4vw,12px)/1.5 inherit;text-transform:uppercase;letter-spacing:.5px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm{width:max-content;max-width:260%;margin-top:3px;background:linear-gradient(#e8e8ee,#aaa);color:#111;font:800 clamp(8px,1.4vw,12px)/1.5 inherit;text-transform:uppercase;letter-spacing:.5px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nm.e{opacity:.6}
 .pos{position:absolute;top:-6px;right:-4px;background:var(--c);color:#fff;font:800 clamp(10px,1.6vw,14px) inherit;padding:1px 5px;border-radius:4px;box-shadow:0 1px 4px #000a}
 .p .w{position:relative}
@@ -39,7 +39,7 @@ dialog select{width:100%;padding:9px;margin:6px 0 12px;background:#000;color:#ff
 <div class="pre" id="pre"></div>
 <input type="file" id="file" accept="image/*" hidden>
 <button class="b no" onclick="file.click()">📷 Foto</button>
-<input type="text" id="inp" maxlength="12" placeholder="TU NOMBRE">
+<input type="text" id="inp" maxlength="20" placeholder="TU NOMBRE">
 <label style="font-size:11px;color:#999;letter-spacing:1px">POSICIÓN</label><select id="mv"></select>
 <button class="b ok" id="save">Guardar</button><button class="b no" id="del">Borrar</button><button class="b no" id="cls">✕</button>
 </dialog>
@@ -101,7 +101,7 @@ async function put(t,i,n,f){const[t2,i2]=$("mv").value.split("_").map(Number),o=
  else{S[t][i]={n:o.n||"",f:o.f||"",o:me};S[t2][i2]={n,f,o:me}}
  save();$("dlg").close();render();
  await wr(t,i,S[t][i].n||"",S[t][i].f||"");if(t2!=t||i2!=i)await wr(t2,i2,S[t2][i2].n||"",S[t2][i2].f||"")}
-$("save").onclick=()=>put(cur[0],cur[1],$("inp").value.trim().slice(0,12),photo);
+$("save").onclick=()=>put(cur[0],cur[1],$("inp").value.trim().slice(0,20),photo);
 $("del").onclick=()=>{$("mv").value=cur[0]+"_"+cur[1];put(cur[0],cur[1],"","")};
 $("cls").onclick=()=>$("dlg").close();
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{view=b.dataset.v;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));render()});
