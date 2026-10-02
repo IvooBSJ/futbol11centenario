@@ -52,8 +52,11 @@ const V=[[50,88],[12,67],[37,70],[63,70],[88,67],[22,46],[50,43],[78,46],[18,19]
 const C=["var(--t1)","var(--t2)"],K="f11c";
 let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
 S=S||[Array.from({length:11},()=>({})),Array.from({length:11},()=>({}))];
-let db=null;try{db=supabase.createClient("https://xeukyzwstqbaciugubtf.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhldWt5endzdHFiYWNpdWd1YnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzM1NzAsImV4cCI6MjEwNjU0OTU3MH0.mP_dWBirPW8XJfJUeiLnrDZQqyVgMkuGvYrsRDj9yUU")}catch(e){}
-const apply=r=>{S[r.team][r.pos]={n:r.name,f:r.photo||""}};
+let tok="";try{tok=localStorage.f11tok||(localStorage.f11tok=crypto.randomUUID())}catch(e){tok=Math.random().toString(36).slice(2)+Date.now()}
+let me="";crypto.subtle?.digest("SHA-256",new TextEncoder().encode(tok)).then(h=>{me=[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("");render()}).catch(()=>{});
+const mine=(t,i)=>!S[t][i].n||!S[t][i].o||S[t][i].o===me;
+let db=null;try{db=supabase.createClient("https://xeukyzwstqbaciugubtf.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhldWt5endzdHFiYWNpdWd1YnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzM1NzAsImV4cCI6MjEwNjU0OTU3MH0.mP_dWBirPW8XJfJUeiLnrDZQqyVgMkuGvYrsRDj9yUU",{global:{headers:{"x-owner":tok}}})}catch(e){}
+const apply=r=>{S[r.team][r.pos]={n:r.name,f:r.photo||"",o:r.owner||""}};
 async function sync(){if(!db)return;const{data,error}=await db.from("players").select("*");if(error)return console.warn(error);data.forEach(apply);render()}
 if(db){sync();db.channel("p").on("postgres_changes",{event:"*",schema:"public",table:"players"},e=>{apply(e.new);render()}).subscribe()}
 let view="g",cur=null,photo="";
@@ -83,7 +86,7 @@ function render(){pitch.innerHTML="";
   line("left:22%;right:22%;bottom:0;height:16%");line("left:22%;right:22%;top:0;height:16%");
   pitch.insertAdjacentHTML("beforeend",`<span class="tag" style="left:0;right:0;top:auto;bottom:-34px;color:${C[t]}"></span>`);
   S[t].forEach((_,i)=>pl(t,i,V[i][0],V[i][1]))}}
-function open(t,i){cur=[t,i];const p=S[t][i];photo=p.f||"";$("dt").textContent=`EQUIPO ${t+1} · ${POS[i]}`;$("inp").value=p.n||"";prev();$("mv").innerHTML=[0,1].map(k=>PN.map((n,j)=>`<option value="${k}_${j}" ${k==t&&j==i?"selected":""}>Equipo ${k+1} · ${n}${S[k][j].n?" ("+S[k][j].n+")":""}</option>`).join("")).join("");$("dlg").style.setProperty("--gold",t?"#ff3b4d":"#2d7dff");$("dlg").showModal()}
+function open(t,i){if(!mine(t,i))return alert("Este lugar lo cargó otra persona 🔒");cur=[t,i];const p=S[t][i];photo=p.f||"";$("dt").textContent=`EQUIPO ${t+1} · ${POS[i]}`;$("inp").value=p.n||"";prev();$("mv").innerHTML=[0,1].map(k=>PN.map((n,j)=>`<option value="${k}_${j}" ${k==t&&j==i?"selected":""} ${mine(k,j)?"":"disabled"}>Equipo ${k+1} · ${n}${S[k][j].n?" ("+S[k][j].n+")":""}</option>`).join("")).join("");$("dlg").style.setProperty("--gold",t?"#ff3b4d":"#2d7dff");$("dlg").showModal()}
 const prev=()=>$("pre").style.backgroundImage=photo?`url(${photo})`:"none";
 $("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),n=c.width=c.height=160,m=Math.min(im.width,im.height);
  c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,n,n);photo=c.toDataURL("image/jpeg",.8);prev()};im.src=URL.createObjectURL(f);e.target.value=""};
@@ -91,11 +94,11 @@ async function wr(t,i,n,f){if(!db)return;
  try{if(f.startsWith("data:")){const path=`t${t}_${i}_${Date.now()}.jpg`,b=await(await fetch(f)).blob();
   const u=await db.storage.from("fotos").upload(path,b,{contentType:"image/jpeg"});if(u.error)throw u.error;
   f=db.storage.from("fotos").getPublicUrl(path).data.publicUrl;S[t][i].f=f;save();render()}
- const r=await db.from("players").update({name:n,photo:f||null,updated_at:new Date()}).eq("team",t).eq("pos",i);if(r.error)throw r.error}
+ const r=await db.from("players").update({name:n,photo:f||null,updated_at:new Date()}).eq("team",t).eq("pos",i).select();if(r.error)throw r.error;if(!r.data.length){alert("Ese lugar es de otra persona 🔒");sync()}}
  catch(e){console.warn(e);alert("No se pudo guardar online")}}
 async function put(t,i,n,f){const[t2,i2]=$("mv").value.split("_").map(Number),o=S[t2][i2];
- if(n==="")S[t][i]={};else if(t2==t&&i2==i)S[t][i]={n,f};
- else{S[t][i]={n:o.n||"",f:o.f||""};S[t2][i2]={n,f}}
+ if(n==="")S[t][i]={};else if(t2==t&&i2==i)S[t][i]={n,f,o:me};
+ else{S[t][i]={n:o.n||"",f:o.f||"",o:me};S[t2][i2]={n,f,o:me}}
  save();$("dlg").close();render();
  await wr(t,i,S[t][i].n||"",S[t][i].f||"");if(t2!=t||i2!=i)await wr(t2,i2,S[t2][i2].n||"",S[t2][i2].f||"")}
 $("save").onclick=()=>put(cur[0],cur[1],$("inp").value.trim().slice(0,12),photo);
