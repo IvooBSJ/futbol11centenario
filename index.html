@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fútbol 11 · Centenario</title>
+<style>
+:root{--t1:#2d7dff;--t2:#ff3b4d;--gold:#f5c542}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(circle at 50% 0,#1b1b22,#050507 70%);color:#fff;font-family:"Segoe UI",system-ui,sans-serif;height:100dvh;overflow:hidden;padding:8px 14px;text-align:center}
+h1{font-size:clamp(16px,3vh,28px);font-style:italic;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(#fff,#999);-webkit-background-clip:text;color:transparent}
+h1 b{color:var(--gold);-webkit-text-fill-color:var(--gold)}
+small{color:#888;letter-spacing:2px;font-size:11px}
+nav{display:flex;gap:8px;justify-content:center;margin:6px 0 8px}
+nav button{background:#1a1a22;color:#bbb;border:1px solid #333;padding:6px 16px;font:700 13px inherit;letter-spacing:1px;text-transform:uppercase;cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+nav button.on{background:linear-gradient(135deg,var(--gold),#c98f10);color:#111}
+#pitch{position:relative;margin:auto;border:3px solid #ffffff55;border-radius:6px;background:repeating-linear-gradient(90deg,#1a6b34 0 9%,#1d7538 9% 18%);box-shadow:0 0 40px #0008}
+#pitch.h{width:min(100%,calc((100dvh - 110px)*105/68));aspect-ratio:105/68}
+#pitch.v{width:min(100%,calc((100dvh - 110px)*68/95));aspect-ratio:68/95;background:repeating-linear-gradient(0deg,#1a6b34 0 9%,#1d7538 9% 18%)}
+.ln{position:absolute;border:2px solid #ffffff66;pointer-events:none}
+.p{position:absolute;transform:translate(-50%,-50%);cursor:pointer;width:11%;max-width:84px;min-width:48px}
+.v .p{width:17%;max-width:90px}
+.av{width:100%;aspect-ratio:1;border-radius:50%;border:3px solid var(--c);background:#16161c center/cover;box-shadow:0 3px 10px #000a;display:grid;place-items:center;overflow:hidden;transition:transform .15s}
+.p:hover .av{transform:scale(1.1)}
+.av svg{width:70%;fill:var(--c);opacity:.8}
+.nm{margin-top:3px;background:linear-gradient(#e8e8ee,#aaa);color:#111;font:800 clamp(8px,1.4vw,12px)/1.5 inherit;text-transform:uppercase;letter-spacing:.5px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm.e{opacity:.6}
+.pos{position:absolute;top:-6px;right:-4px;background:var(--c);font:800 9px inherit;padding:1px 4px;border-radius:3px}
+.p .w{position:relative}
+.tag{position:absolute;top:8px;font:800 clamp(12px,2vw,20px) inherit;letter-spacing:2px;text-transform:uppercase;font-style:italic}
+dialog{margin:auto;background:#14141a;color:#fff;border:2px solid var(--gold);padding:22px;width:min(92vw,320px);text-align:center}
+dialog::backdrop{background:#000b}
+dialog input[type=text]{width:100%;padding:10px;margin:10px 0;background:#000;color:#fff;border:1px solid #444;text-align:center;font:700 16px inherit;text-transform:uppercase}
+.pre{width:110px;height:110px;margin:8px auto;border-radius:50%;border:3px solid var(--gold);background:#222 center/cover}
+.b{padding:9px 14px;margin:4px;border:0;font:700 13px inherit;cursor:pointer;text-transform:uppercase}
+.ok{background:var(--gold)}.no{background:#333;color:#fff}
+</style></head><body>
+<h1>Fútbol <b>11</b> · Centenario</h1><small>ARMÁ LOS EQUIPOS · 4-3-3</small>
+<nav><button data-v="g" class="on">Global</button><button data-v="0">Equipo 1</button><button data-v="1">Equipo 2</button></nav>
+<div id="pitch"></div>
+<dialog id="dlg"><b id="dt"></b>
+<div class="pre" id="pre"></div>
+<input type="file" id="file" accept="image/*" hidden>
+<button class="b no" onclick="file.click()">📷 Foto</button>
+<input type="text" id="inp" maxlength="12" placeholder="TU NOMBRE">
+<button class="b ok" id="save">Guardar</button><button class="b no" id="del">Borrar</button><button class="b no" id="cls">✕</button>
+</dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const POS=["ARQ","LI","DFC","DFC","LD","MC","MC","MC","EI","DC","ED"];
+// coordenadas vista de equipo (x%, y%) — 4-3-3 vertical, arquero abajo
+const V=[[50,88],[12,67],[37,70],[63,70],[88,67],[22,46],[50,43],[78,46],[18,19],[50,14],[82,19]];
+const C=["var(--t1)","var(--t2)"],K="f11c";
+let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+S=S||[Array.from({length:11},()=>({})),Array.from({length:11},()=>({}))];
+let db=null;try{db=supabase.createClient("https://xeukyzwstqbaciugubtf.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhldWt5endzdHFiYWNpdWd1YnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzM1NzAsImV4cCI6MjEwNjU0OTU3MH0.mP_dWBirPW8XJfJUeiLnrDZQqyVgMkuGvYrsRDj9yUU")}catch(e){}
+const apply=r=>{S[r.team][r.pos]={n:r.name,f:r.photo||""}};
+async function sync(){if(!db)return;const{data,error}=await db.from("players").select("*");if(error)return console.warn(error);data.forEach(apply);render()}
+if(db){sync();db.channel("p").on("postgres_changes",{event:"*",schema:"public",table:"players"},e=>{apply(e.new);render()}).subscribe()}
+let view="g",cur=null,photo="";
+const $=id=>document.getElementById(id),pitch=$("pitch");
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){alert("Sin espacio para guardar fotos")}};
+const ic='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5"/><path d="M3 22c0-5 4-8 9-8s9 3 9 8z"/></svg>';
+// global horizontal: eq1 izquierda (arquero en x=5), eq2 espejo
+const G=(t,i)=>{const[x,y]=V[i],d=(88-y)/74;const px=5+d*40;return t?[100-px,100-x]:[px,x]};
+function pl(t,i,x,y,lbl){const p=S[t][i],d=document.createElement("div");d.className="p";d.style.cssText=`left:${x}%;top:${y}%;--c:${C[t]}`;
+d.innerHTML=`<div class="w"><div class="av" ${p.f?`style="background-image:url(${p.f})"`:""}>${p.f?"":ic}</div><span class="pos">${POS[i]}</span></div><div class="nm ${p.n?"":"e"}">${p.n||"+ Nombre"}</div>`;
+d.onclick=()=>open(t,i);pitch.append(d)}
+function line(s){const l=document.createElement("div");l.className="ln";l.style.cssText=s;pitch.append(l)}
+function render(){pitch.innerHTML="";
+ if(view=="g"){pitch.className="h";
+  line("left:50%;top:0;bottom:0;border-width:0 0 0 2px");line("left:50%;top:50%;width:18%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%)");
+  [0,1].forEach(t=>{const s=t?"right":"left";line(`${s}:0;top:22%;height:56%;width:15%`);line(`${s}:0;top:36%;height:28%;width:5%`)});
+  pitch.insertAdjacentHTML("beforeend",`<span class="tag" style="left:12px;color:var(--t1)">Equipo 1</span><span class="tag" style="right:12px;color:var(--t2)">Equipo 2</span>`);
+  for(let t=0;t<2;t++)S[t].forEach((_,i)=>{const[x,y]=G(t,i);pl(t,i,x,y,1)})}
+ else{const t=+view;pitch.className="v";
+  line("left:0;right:0;top:50%;border-width:2px 0 0");line("left:50%;top:50%;width:26%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%)");
+  line("left:22%;right:22%;bottom:0;height:16%");line("left:22%;right:22%;top:0;height:16%");
+  pitch.insertAdjacentHTML("beforeend",`<span class="tag" style="left:0;right:0;top:auto;bottom:-34px;color:${C[t]}"></span>`);
+  S[t].forEach((_,i)=>pl(t,i,V[i][0],V[i][1]))}}
+function open(t,i){cur=[t,i];const p=S[t][i];photo=p.f||"";$("dt").textContent=`EQUIPO ${t+1} · ${POS[i]}`;$("inp").value=p.n||"";prev();$("dlg").style.setProperty("--gold",t?"#ff3b4d":"#2d7dff");$("dlg").showModal()}
+const prev=()=>$("pre").style.backgroundImage=photo?`url(${photo})`:"none";
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),n=c.width=c.height=160,m=Math.min(im.width,im.height);
+ c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,n,n);photo=c.toDataURL("image/jpeg",.8);prev()};im.src=URL.createObjectURL(f);e.target.value=""};
+async function put(t,i,n,f){S[t][i]={n,f};save();$("dlg").close();render();if(!db)return;
+ try{if(f.startsWith("data:")){const path=`t${t}_${i}_${Date.now()}.jpg`,b=await(await fetch(f)).blob();
+  const u=await db.storage.from("fotos").upload(path,b,{contentType:"image/jpeg"});if(u.error)throw u.error;
+  f=db.storage.from("fotos").getPublicUrl(path).data.publicUrl;S[t][i].f=f;save();render()}
+ const r=await db.from("players").update({name:n,photo:f||null,updated_at:new Date()}).eq("team",t).eq("pos",i);if(r.error)throw r.error}
+ catch(e){console.warn(e);alert("No se pudo guardar online")}}
+$("save").onclick=()=>put(cur[0],cur[1],$("inp").value.trim().slice(0,12),photo);
+$("del").onclick=()=>put(cur[0],cur[1],"","");
+$("cls").onclick=()=>$("dlg").close();
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{view=b.dataset.v;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));render()});
+render();
+</script></body></html>
