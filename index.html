@@ -27,7 +27,7 @@ nav button.on{background:linear-gradient(135deg,var(--gold),#c98f10);color:#111}
 .tag{position:absolute;top:8px;font:800 clamp(12px,2vw,20px) inherit;letter-spacing:2px;text-transform:uppercase;font-style:italic}
 dialog{margin:auto;background:#14141a;color:#fff;border:2px solid var(--gold);padding:22px;width:min(92vw,320px);text-align:center}
 dialog::backdrop{background:#000b}
-dialog select{width:100%;padding:9px;margin:6px 0 12px;background:#000;color:#fff;border:1px solid #444;font:600 14px inherit}dialog input[type=text]{width:100%;padding:10px;margin:10px 0;background:#000;color:#fff;border:1px solid #444;text-align:center;font:700 16px inherit;text-transform:uppercase}
+dialog.ro #save,dialog.ro #mv,dialog.ro label,dialog.ro #fb{display:none}dialog select{width:100%;padding:9px;margin:6px 0 12px;background:#000;color:#fff;border:1px solid #444;font:600 14px inherit}dialog input[type=text]{width:100%;padding:10px;margin:10px 0;background:#000;color:#fff;border:1px solid #444;text-align:center;font:700 16px inherit;text-transform:uppercase}
 .pre{width:110px;height:110px;margin:8px auto;border-radius:50%;border:3px solid var(--gold);background:#222 center/cover}
 .b{color:#fff;padding:9px 14px;margin:4px;border:0;font:700 13px inherit;cursor:pointer;text-transform:uppercase}
 .ok{background:var(--gold);color:#fff;font-weight:800}.no{background:#333;color:#fff}
@@ -38,7 +38,7 @@ dialog select{width:100%;padding:9px;margin:6px 0 12px;background:#000;color:#ff
 <dialog id="dlg"><b id="dt"></b>
 <div class="pre" id="pre"></div>
 <input type="file" id="file" accept="image/*" hidden>
-<button class="b no" onclick="file.click()">📷 Foto</button>
+<button class="b no" id="fb" onclick="file.click()">📷 Foto</button>
 <input type="text" id="inp" maxlength="20" placeholder="TU NOMBRE">
 <label style="font-size:11px;color:#999;letter-spacing:1px">POSICIÓN</label><select id="mv"></select>
 <button class="b ok" id="save">Guardar</button><button class="b no" id="del">Borrar</button><button class="b no" id="cls">✕</button>
@@ -86,7 +86,7 @@ function render(){pitch.innerHTML="";
   line("left:22%;right:22%;bottom:0;height:16%");line("left:22%;right:22%;top:0;height:16%");
   pitch.insertAdjacentHTML("beforeend",`<span class="tag" style="left:0;right:0;top:auto;bottom:-34px;color:${C[t]}"></span>`);
   S[t].forEach((_,i)=>pl(t,i,V[i][0],V[i][1]))}}
-function open(t,i){if(!mine(t,i))return alert("Este lugar lo cargó otra persona 🔒");cur=[t,i];const p=S[t][i];photo=p.f||"";$("dt").textContent=`EQUIPO ${t+1} · ${POS[i]}`;$("inp").value=p.n||"";prev();$("mv").innerHTML=[0,1].map(k=>PN.map((n,j)=>`<option value="${k}_${j}" ${k==t&&j==i?"selected":""} ${mine(k,j)?"":"disabled"}>Equipo ${k+1} · ${n}${S[k][j].n?" ("+S[k][j].n+")":""}</option>`).join("")).join("");$("dlg").style.setProperty("--gold",t?"#ff3b4d":"#2d7dff");$("dlg").showModal()}
+function open(t,i){cur=[t,i];$("dlg").classList.toggle("ro",!mine(t,i));$("inp").disabled=!mine(t,i);const p=S[t][i];photo=p.f||"";$("dt").textContent=`EQUIPO ${t+1} · ${POS[i]}`;$("inp").value=p.n||"";prev();$("mv").innerHTML=[0,1].map(k=>PN.map((n,j)=>`<option value="${k}_${j}" ${k==t&&j==i?"selected":""} ${mine(k,j)?"":"disabled"}>Equipo ${k+1} · ${n}${S[k][j].n?" ("+S[k][j].n+")":""}</option>`).join("")).join("");$("dlg").style.setProperty("--gold",t?"#ff3b4d":"#2d7dff");$("dlg").showModal()}
 const prev=()=>$("pre").style.backgroundImage=photo?`url(${photo})`:"none";
 $("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),n=c.width=c.height=160,m=Math.min(im.width,im.height);
  c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,n,n);photo=c.toDataURL("image/jpeg",.8);prev()};im.src=URL.createObjectURL(f);e.target.value=""};
@@ -94,7 +94,7 @@ async function wr(t,i,n,f){if(!db)return;
  try{if(f.startsWith("data:")){const path=`t${t}_${i}_${Date.now()}.jpg`,b=await(await fetch(f)).blob();
   const u=await db.storage.from("fotos").upload(path,b,{contentType:"image/jpeg"});if(u.error)throw u.error;
   f=db.storage.from("fotos").getPublicUrl(path).data.publicUrl;S[t][i].f=f;save();render()}
- const r=await db.from("players").update({name:n,photo:f||null,updated_at:new Date()}).eq("team",t).eq("pos",i).select();if(r.error)throw r.error;if(!r.data.length){alert("Ese lugar es de otra persona 🔒");sync()}}
+ const r=await db.from("players").update({name:n,photo:f||null,updated_at:new Date()}).eq("team",t).eq("pos",i).select();if(r.error)throw r.error;if(!r.data.length){alert("Ese lugar es de otra persona 🔒 (solo podés borrarlo)");sync()}}
  catch(e){console.warn(e);alert("No se pudo guardar online")}}
 async function put(t,i,n,f){const[t2,i2]=$("mv").value.split("_").map(Number),o=S[t2][i2];
  if(n==="")S[t][i]={};else if(t2==t&&i2==i)S[t][i]={n,f,o:me};
@@ -102,7 +102,7 @@ async function put(t,i,n,f){const[t2,i2]=$("mv").value.split("_").map(Number),o=
  save();$("dlg").close();render();
  await wr(t,i,S[t][i].n||"",S[t][i].f||"");if(t2!=t||i2!=i)await wr(t2,i2,S[t2][i2].n||"",S[t2][i2].f||"")}
 $("save").onclick=()=>put(cur[0],cur[1],$("inp").value.trim().slice(0,20),photo);
-$("del").onclick=()=>{$("mv").value=cur[0]+"_"+cur[1];put(cur[0],cur[1],"","")};
+$("del").onclick=()=>{if(!mine(cur[0],cur[1])&&!confirm("Este lugar lo cargó otra persona. ¿Borrarlo igual?"))return;$("mv").value=cur[0]+"_"+cur[1];put(cur[0],cur[1],"","")};
 $("cls").onclick=()=>$("dlg").close();
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{view=b.dataset.v;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));render()});
 render();addEventListener("resize",()=>{if(!$("dlg").open)render()});
