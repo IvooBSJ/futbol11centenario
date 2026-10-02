@@ -344,13 +344,106 @@ dialog{
   color:#fff;
   border:2px solid var(--gold);
   border-radius:12px;
-  padding:20px;
-  width:min(94vw,340px);
+  padding:20px 16px;
+  width:min(94vw,360px);
+  max-height:90dvh;
+  overflow-y:auto;
   text-align:center;
   box-shadow:0 12px 40px #000e;
 }
 dialog::backdrop{background:rgba(0,0,0,0.85);backdrop-filter:blur(4px)}
 dialog.ro #save,dialog.ro #mv,dialog.ro label,dialog.ro #fb,dialog.ro #cap-box,dialog.ro #del{display:none !important}
+dialog.is-ref #fb,dialog.is-ref #save{display:inline-block !important}
+
+/* Badges de apuestas en la cancha y banco */
+.p-bets-badge{
+  position:absolute;
+  bottom:-7px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(10,10,16,0.95);
+  border:1.5px solid var(--gold);
+  border-radius:10px;
+  padding:1px 5px;
+  font:900 clamp(8px,1.2vw,10.5px)/1 inherit;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  gap:2px;
+  box-shadow:0 0 10px rgba(245,197,66,0.8), 0 2px 4px #000;
+  z-index:4;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.b-bets-badge{
+  position:absolute;
+  bottom:-6px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(10,10,16,0.95);
+  border:1.5px solid var(--gold);
+  border-radius:10px;
+  padding:1px 4px;
+  font:900 8.5px/1 inherit;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  gap:2px;
+  box-shadow:0 0 8px rgba(245,197,66,0.7);
+  z-index:4;
+  white-space:nowrap;
+  pointer-events:none;
+}
+
+/* Tarjeta de apuestas dentro del diálogo del jugador */
+.player-bets-card{
+  background:rgba(20,20,30,0.95);
+  border:1px solid rgba(245,197,66,0.4);
+  border-radius:10px;
+  padding:10px;
+  margin:10px 0 6px;
+  text-align:left;
+  font-size:11.5px;
+}
+.player-bets-hdr{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:900;
+  font-size:11px;
+  color:var(--gold);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.player-bets-summary{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  margin-bottom:6px;
+}
+.player-bets-feed{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  max-height:130px;
+  overflow-y:auto;
+}
+.player-bet-item{
+  background:#0c0c14;
+  border-left:2.5px solid var(--gold);
+  padding:5px 8px;
+  border-radius:4px;
+  font-size:11px;
+  color:#ccc;
+}
+.player-bet-item b{color:#fff}
+.player-bets-empty{
+  text-align:center;
+  color:#777;
+  font-size:11px;
+  padding:6px 0;
+}
 dialog select{
   width:100%;
   padding:9px;
@@ -735,6 +828,17 @@ dialog input[type=text]{
 
   <label id="lbl-pos" style="font-size:11px;color:#999;letter-spacing:1px">POSICIÓN</label>
   <select id="mv"></select>
+
+  <!-- Pálpitos y Apuestas recibidas por este jugador -->
+  <div id="dlg-bets-box" class="player-bets-card" style="display:none">
+    <div class="player-bets-hdr">
+      <span>🎯 PÁLPITOS DE LA BANDA</span>
+      <span id="dlg-bets-tot" class="badge">0</span>
+    </div>
+    <div id="dlg-bets-summary" class="player-bets-summary"></div>
+    <div id="dlg-bets-details" class="player-bets-feed"></div>
+  </div>
+
   <button class="b ok" id="save">Guardar</button>
   <button class="b no" id="cls">✕ Cerrar</button>
 </dialog>
@@ -1066,12 +1170,14 @@ if(db){
         betsList.unshift(payload.bet);
         saveBets();
         renderBets();
+        render();
       }
     })
     .on("broadcast",{event:"del_bet"},payload=>{
       betsList=betsList.filter(b=>b.id!==payload.id);
       saveBets();
       renderBets();
+      render();
     })
     .on("broadcast",{event:"player_extra"},payload=>{
       applyPlayerRow(payload.row);
@@ -1088,6 +1194,7 @@ async function syncBetsOnline(){
       betsList=data.map(b=>({id:b.id,user:b.user_name,team_pick:b.team_pick,total_goals:b.total_goals,scorer:b.scorer,yellow_card:b.yellow_card,amount:b.amount,time:b.created_at,owner:b.owner}));
       saveBets();
       renderBets();
+      render();
     }
   }catch(e){}
 }
@@ -1095,6 +1202,53 @@ async function syncBetsOnline(){
 let view="g",cur=null,photo="";
 const $=id=>document.getElementById(id),pitch=$("pitch");
 const ic='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5"/><path d="M3 22c0-5 4-8 9-8s9 3 9 8z"/></svg>';
+
+// Helper para obtener todas las apuestas recibidas por un jugador
+function getPlayerBets(name){
+  if(!name) return { goals: 0, mvp: 0, cards: 0, bloopers: 0, list: [] };
+  const target = name.trim().toLowerCase();
+  let goals = 0, mvp = 0, cards = 0, bloopers = 0;
+  const list = [];
+
+  betsList.forEach(b => {
+    const items = [];
+    const checkMatch = (val) => {
+      if(!val) return false;
+      const v = val.toLowerCase();
+      return v.includes(target) || target.includes(v.split(" ")[0]);
+    };
+
+    if(checkMatch(b.scorer)){
+      goals++;
+      items.push(`⚽ Gol`);
+    }
+    if(checkMatch(b.mvp)){
+      mvp++;
+      items.push(`👑 MVP`);
+    }
+    if(checkMatch(b.yellow_card)){
+      cards++;
+      items.push(`🟨 Amarilla`);
+    }
+    if(checkMatch(b.blooper)){
+      bloopers++;
+      items.push(`🥩 Paga birras`);
+    }
+
+    if(items.length > 0){
+      const s0 = b.s0 !== undefined ? b.s0 : (b.team_pick === "0" ? 2 : 1);
+      const s1 = b.s1 !== undefined ? b.s1 : (b.team_pick === "1" ? 2 : 1);
+      list.push({
+        user: b.user,
+        items,
+        score: `${s0} - ${s1}`,
+        chips: b.amount || 500
+      });
+    }
+  });
+
+  return { goals, mvp, cards, bloopers, list };
+}
 
 // Coordenadas cancha horizontal
 const G=(t,i)=>{
@@ -1108,8 +1262,22 @@ function pl(t,i,x,y){
   d.className="p";
   d.style.cssText=`left:${x}%;top:${y}%;--c:${C[t]}`;
   const capHtml=p.c?`<span class="cap-badge" title="Capitán">C</span>`:"";
+
+  // Badges de apuestas recibidas en la planilla
+  const bData=getPlayerBets(p.n);
+  let betsBadgeHtml="";
+  if(bData.goals>0||bData.mvp>0||bData.cards>0||bData.bloopers>0){
+    const parts=[];
+    if(bData.goals>0) parts.push(`⚽ ${bData.goals}`);
+    if(bData.mvp>0) parts.push(`👑`);
+    if(bData.cards>0) parts.push(`🟨`);
+    if(bData.bloopers>0) parts.push(`🥩`);
+    betsBadgeHtml=`<div class="p-bets-badge" title="${bData.goals} goles, ${bData.mvp} MVP, ${bData.cards} amarillas">${parts.join(" ")}</div>`;
+  }
+
   d.innerHTML=`<div class="w">
     ${capHtml}
+    ${betsBadgeHtml}
     <div class="av" ${p.f?`style="background-image:url(${p.f})"`:""}>${p.f?"":ic}</div>
     <span class="pos">${POS[i]}</span>
   </div>
@@ -1179,9 +1347,23 @@ function renderBench(){
       slot.className="b-slot";
       slot.style.setProperty("--c",C[t]);
       const capHtml=p.c?`<span class="cap-badge" style="top:-4px;left:-4px" title="Capitán">C</span>`:"";
+
+      // Badge de apuestas en suplentes
+      const bData=getPlayerBets(p.n);
+      let betsBadgeHtml="";
+      if(bData.goals>0||bData.mvp>0||bData.cards>0||bData.bloopers>0){
+        const parts=[];
+        if(bData.goals>0) parts.push(`⚽ ${bData.goals}`);
+        if(bData.mvp>0) parts.push(`👑`);
+        if(bData.cards>0) parts.push(`🟨`);
+        if(bData.bloopers>0) parts.push(`🥩`);
+        betsBadgeHtml=`<div class="b-bets-badge" title="Pálpitos">${parts.join(" ")}</div>`;
+      }
+
       slot.innerHTML=`
         <div class="b-slot-w">
           ${capHtml}
+          ${betsBadgeHtml}
           <div class="b-slot-av" ${p.f?`style="background-image:url(${p.f})"`:""}>${p.f?"":ic}</div>
           <span class="b-slot-pos">SUP</span>
         </div>
@@ -1192,7 +1374,7 @@ function renderBench(){
     });
   });
 
-  // Árbitro slot
+  // Árbitro slot con foto y asignación
   const refCont=$("slot-ref");
   if(refCont){
     refCont.innerHTML="";
@@ -1203,7 +1385,7 @@ function renderBench(){
     slot.innerHTML=`
       <div class="b-slot-w" style="width:50px;height:50px">
         <div class="b-slot-av" ${referee.f?`style="background-image:url(${referee.f})"`:""}>
-          ${referee.f?"":`<span style="font-size:20px">🟨</span>`}
+          ${referee.f?"":`<span style="font-size:22px">🟨</span>`}
         </div>
         <span class="b-slot-pos" style="background:#ffd700;color:#111">REF</span>
       </div>
@@ -1219,19 +1401,27 @@ function openModal(t,i){
   cur=[t,i];
   const p=getSlotData(t,i);
   photo=p.f||"";
-  const mine=isMine(t,i);
+
+  // El árbitro siempre puede cargar/editar su foto y su nombre
+  const mine = t === 2 ? true : isMine(t,i);
   $("dlg").classList.toggle("ro",!mine);
+  $("dlg").classList.toggle("is-ref",t===2);
   $("inp").disabled=!mine;
   $("inp").value=p.n||"";
   prev();
 
+  const bBox = $("dlg-bets-box");
+
   if(t===2){
     // Árbitro
-    $("dt").innerHTML="⚖️ ÁRBITRO OFICIAL" + (!mine?`<br><small style="color:var(--gold);font-size:11px">🔒 Lugar ocupado por ${escapeHtml(p.n||"otro usuario")}</small>`:"");
+    $("dt").innerHTML="⚖️ ÁRBITRO OFICIAL<br><small style=\"color:var(--gold);font-size:11px\">Foto y nombre del referí oficial</small>";
     $("cap-box").style.display="none";
     $("lbl-pos").style.display="none";
     $("mv").style.display="none";
+    if(bBox) bBox.style.display="none";
     $("dlg").style.setProperty("--gold","#f5c542");
+    $("fb").style.display="inline-block";
+    $("save").style.display="inline-block";
   }else{
     $("cap-box").style.display="flex";
     $("lbl-pos").style.display="block";
@@ -1241,6 +1431,42 @@ function openModal(t,i){
 
     const baseTitle=i>=11?`EQUIPO ${t+1} · SUPLENTE ${i-10}`:`EQUIPO ${t+1} · ${POS[i]}`;
     $("dt").innerHTML=baseTitle + (!mine?`<br><small style="color:var(--gold);font-size:11px">🔒 Lugar ocupado por ${escapeHtml(p.n||"otro jugador")}</small>`:"");
+
+    // Llenar caja de apuestas de este jugador
+    if(bBox){
+      if(!p.n){
+        bBox.style.display="none";
+      }else{
+        bBox.style.display="block";
+        const bData = getPlayerBets(p.n);
+        const tot = bData.list.length;
+        $("dlg-bets-tot").textContent = tot;
+
+        if(tot === 0){
+          $("dlg-bets-summary").innerHTML = `<div class="player-bets-empty">Sin pálpitos todavía para este jugador.<br>¡Sé el primero en apostar por él en el Prode! 🎯</div>`;
+          $("dlg-bets-details").innerHTML = "";
+        }else{
+          const parts = [];
+          if(bData.goals > 0) parts.push(`<span class="bet-pill">⚽ ${bData.goals} ${bData.goals===1?'voto a Gol':'votos a Goles'}</span>`);
+          if(bData.mvp > 0) parts.push(`<span class="bet-pill gold">👑 ${bData.mvp} ${bData.mvp===1?'voto a MVP':'votos a MVP'}</span>`);
+          if(bData.cards > 0) parts.push(`<span class="bet-pill">🟨 ${bData.cards} ${bData.cards===1?'voto a Amarilla':'votos a Amarilla'}</span>`);
+          if(bData.bloopers > 0) parts.push(`<span class="bet-pill" style="color:#ff8888">🥩 ${bData.bloopers} ${bData.bloopers===1?'voto Paga Birras':'votos Paga Birras'}</span>`);
+          $("dlg-bets-summary").innerHTML = parts.join(" ");
+
+          let feed = "";
+          bData.list.forEach(item => {
+            feed += `
+              <div class="player-bet-item">
+                <div><b>${escapeHtml(item.user)}</b> apostó:</div>
+                <div style="color:var(--gold);margin-top:2px">${item.items.join(" · ")}</div>
+                <div style="font-size:10px;color:#777;margin-top:2px">Marcador: ${item.score} · 🪙 ${item.chips} pts</div>
+              </div>
+            `;
+          });
+          $("dlg-bets-details").innerHTML = feed;
+        }
+      }
+    }
 
     // Opciones para mover / intercambiar posición
     let opts="";
@@ -1326,12 +1552,17 @@ async function wrOnline(t,i,n,f,isCap){
 
 async function putPlayer(t,i,n,f,isCap){
   if(t===2){
-    // Árbitro
-    referee={n,f,o:n?me:""};
+    // Árbitro oficial: guardar nombre y foto
+    if(!n){
+      alert("Por favor ingresá el nombre del árbitro.");
+      $("inp").focus();
+      return;
+    }
+    referee={n,f:f||referee.f||"",o:me};
     saveRef();
     renderBench();
     $("dlg").close();
-    await wrOnline(2,0,n,f,false);
+    await wrOnline(2,0,n,referee.f,false);
     return;
   }
 
@@ -1832,6 +2063,7 @@ $("bet-btn-submit").onclick=async()=>{
   betsList.unshift(newBet);
   saveBets();
   renderBets();
+  render();
   alert(`¡Boleta confirmada para ${user}! 🎟️🪙\nMarcador: ${betScore0} - ${betScore1}\n¡Ya podés compartirla en el grupo de WhatsApp!`);
 
   if(db){
@@ -1891,6 +2123,7 @@ window.deleteBet=async(id)=>{
   betsList = betsList.filter(b => b.id !== id);
   saveBets();
   renderBets();
+  render();
 
   if(db){
     try{
