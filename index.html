@@ -5,7 +5,7 @@
 :root{--t1:#2d7dff;--t2:#ff3b4d;--gold:#f5c542}
 *{box-sizing:border-box;margin:0}
 body{background:radial-gradient(circle at 50% 0,#1b1b22,#050507 70%);color:#fff;font-family:"Segoe UI",system-ui,sans-serif;height:100dvh;overflow:hidden;padding:8px 14px;text-align:center}
-h1{font-size:clamp(16px,3vh,28px);font-style:italic;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(#fff,#999);-webkit-background-clip:text;color:transparent}
+h1{white-space:nowrap;font-size:clamp(15px,min(3vh,5.5vw),28px);font-style:italic;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(#fff,#999);-webkit-background-clip:text;color:transparent}
 h1 b{color:var(--gold);-webkit-text-fill-color:var(--gold)}
 small{color:#888;letter-spacing:2px;font-size:11px}
 nav{display:flex;gap:8px;justify-content:center;margin:6px 0 8px}
@@ -15,12 +15,12 @@ nav button.on{background:linear-gradient(135deg,var(--gold),#c98f10);color:#111}
 #pitch.h{width:min(100%,calc((100dvh - 110px)*105/68));aspect-ratio:105/68}
 #pitch.v{width:min(100%,calc((100dvh - 110px)*68/95));aspect-ratio:68/95;background:repeating-linear-gradient(0deg,#1a6b34 0 9%,#1d7538 9% 18%)}
 .ln{position:absolute;border:2px solid #ffffff66;pointer-events:none}
-.p{position:absolute;transform:translate(-50%,-50%);cursor:pointer;width:11%;max-width:84px;min-width:48px}
-.v .p{width:17%;max-width:90px}
+.p{position:absolute;transform:translate(-50%,-50%);cursor:pointer;display:flex;flex-direction:column;align-items:center;width:11%;max-width:84px;min-width:48px}
+.v .p{width:17%;max-width:90px}.g .p{width:11%;min-width:0}.v.g .p{width:12%}.g .nm{font-size:clamp(6px,1.9vw,11px);padding:0 2px}.g .pos{font-size:7px;padding:0 2px;top:-4px;right:-2px}.g .av{border-width:2px}.v.g .tag{font-size:13px}.p .w{width:100%}
 .av{width:100%;aspect-ratio:1;border-radius:50%;border:3px solid var(--c);background:#16161c center/cover;box-shadow:0 3px 10px #000a;display:grid;place-items:center;overflow:hidden;transition:transform .15s}
 .p:hover .av{transform:scale(1.1)}
 .av svg{width:70%;fill:var(--c);opacity:.8}
-.nm{margin-top:3px;background:linear-gradient(#e8e8ee,#aaa);color:#111;font:800 clamp(8px,1.4vw,12px)/1.5 inherit;text-transform:uppercase;letter-spacing:.5px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm{width:max-content;max-width:170%;margin-top:3px;background:linear-gradient(#e8e8ee,#aaa);color:#111;font:800 clamp(8px,1.4vw,12px)/1.5 inherit;text-transform:uppercase;letter-spacing:.5px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nm.e{opacity:.6}
 .pos{position:absolute;top:-6px;right:-4px;background:var(--c);font:800 9px inherit;padding:1px 4px;border-radius:3px}
 .p .w{position:relative}
@@ -61,11 +61,17 @@ const ic='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5"/><path d="M3 2
 // global horizontal: eq1 izquierda (arquero en x=5), eq2 espejo
 const G=(t,i)=>{const[x,y]=V[i],d=(88-y)/74;const px=5+d*40;return t?[100-px,100-x]:[px,x]};
 function pl(t,i,x,y,lbl){const p=S[t][i],d=document.createElement("div");d.className="p";d.style.cssText=`left:${x}%;top:${y}%;--c:${C[t]}`;
-d.innerHTML=`<div class="w"><div class="av" ${p.f?`style="background-image:url(${p.f})"`:""}>${p.f?"":ic}</div><span class="pos">${POS[i]}</span></div><div class="nm ${p.n?"":"e"}">${p.n||"+ Nombre"}</div>`;
+d.innerHTML=`<div class="w"><div class="av" ${p.f?`style="background-image:url(${p.f})"`:""}>${p.f?"":ic}</div><span class="pos">${POS[i]}</span></div><div class="nm ${p.n?"":"e"}">${p.n||"+"}</div>`;
 d.onclick=()=>open(t,i);pitch.append(d)}
 function line(s){const l=document.createElement("div");l.className="ln";l.style.cssText=s;pitch.append(l)}
 function render(){pitch.innerHTML="";
- if(view=="g"){pitch.className="h";
+ const pt=innerWidth<innerHeight;
+ if(view=="g"&&pt){pitch.className="v g";
+  line("left:0;right:0;top:50%;border-width:2px 0 0");line("left:50%;top:50%;width:26%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%)");
+  line("left:22%;right:22%;bottom:0;height:12%");line("left:22%;right:22%;top:0;height:12%");
+  pitch.insertAdjacentHTML("beforeend",`<span class="tag" style="left:8px;top:6px;color:var(--t2)">Equipo 2</span><span class="tag" style="left:8px;top:auto;bottom:6px;color:var(--t1)">Equipo 1</span>`);
+  for(let t=0;t<2;t++)S[t].forEach((_,i)=>{const x=V[i][0],yy=[94,82,70,59][i?i<5?1:i<8?2:3:0];pl(t,i,t?100-x:x,t?100-yy:yy,1)})}
+ else if(view=="g"){pitch.className="h g";
   line("left:50%;top:0;bottom:0;border-width:0 0 0 2px");line("left:50%;top:50%;width:18%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%)");
   [0,1].forEach(t=>{const s=t?"right":"left";line(`${s}:0;top:22%;height:56%;width:15%`);line(`${s}:0;top:36%;height:28%;width:5%`)});
   pitch.insertAdjacentHTML("beforeend",`<span class="tag" style="left:12px;color:var(--t1)">Equipo 1</span><span class="tag" style="right:12px;color:var(--t2)">Equipo 2</span>`);
@@ -89,5 +95,5 @@ $("save").onclick=()=>put(cur[0],cur[1],$("inp").value.trim().slice(0,12),photo)
 $("del").onclick=()=>put(cur[0],cur[1],"","");
 $("cls").onclick=()=>$("dlg").close();
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{view=b.dataset.v;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));render()});
-render();
+render();addEventListener("resize",()=>{if(!$("dlg").open)render()});
 </script></body></html>
