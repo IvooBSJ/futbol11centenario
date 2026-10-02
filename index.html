@@ -11,9 +11,10 @@ small{color:#888;letter-spacing:2px;font-size:11px}
 nav{display:flex;gap:8px;justify-content:center;margin:6px 0 8px}
 nav button{background:#1a1a22;color:#bbb;border:1px solid #333;padding:6px 16px;font:700 13px inherit;letter-spacing:1px;text-transform:uppercase;cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
 nav button.on{background:linear-gradient(135deg,var(--gold),#c98f10);color:#111}
+.info{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;margin:0 0 8px;font-size:clamp(11px,3vw,13px);color:#ccc;letter-spacing:.5px}.info b{color:var(--gold)}.info a{color:#fff;text-decoration:none;border-bottom:1px solid var(--gold)}
 #pitch{position:relative;margin:auto;border:3px solid #ffffff55;border-radius:6px;background:repeating-linear-gradient(90deg,#1a6b34 0 9%,#1d7538 9% 18%);box-shadow:0 0 40px #0008}
-#pitch.h{width:min(100%,calc((100dvh - 110px)*105/68));aspect-ratio:105/68}
-#pitch.v{width:min(100%,calc((100dvh - 110px)*68/95));aspect-ratio:68/95;background:repeating-linear-gradient(0deg,#1a6b34 0 9%,#1d7538 9% 18%)}
+#pitch.h{width:min(100%,calc((100dvh - 140px)*105/68));aspect-ratio:105/68}
+#pitch.v{width:min(100%,calc((100dvh - 140px)*68/95));aspect-ratio:68/95;background:repeating-linear-gradient(0deg,#1a6b34 0 9%,#1d7538 9% 18%)}
 .ln{position:absolute;border:2px solid #ffffff66;pointer-events:none}
 .p{position:absolute;transform:translate(-50%,-50%);cursor:pointer;display:flex;flex-direction:column;align-items:center;width:11%;max-width:84px;min-width:48px}
 .v .p{width:17%;max-width:90px}.g .p{width:11%;min-width:0}.v.g .p{width:12%}.g .nm{font-size:clamp(6px,1.9vw,11px);padding:0 2px}.g .pos{font-size:clamp(9px,1.25vw,14px);padding:1px 4px;top:-5px;right:-8px;box-shadow:0 1px 4px #000a}.g .av{border-width:2px}.v.g .tag{font-size:13px}.p .w{width:100%}
@@ -34,6 +35,7 @@ dialog.ro #save,dialog.ro #mv,dialog.ro label,dialog.ro #fb{display:none}dialog 
 </style></head><body>
 <h1>Fútbol <b>11</b> · Centenario</h1><small>ARMÁ LOS EQUIPOS · 4-3-3</small>
 <nav><button data-v="g" class="on">Global</button><button data-v="0">Equipo 1</button><button data-v="1">Equipo 2</button></nav>
+<div class="info"><span>🕔 <b>17:00 hs</b> · llegar 15 min antes</span><a href="https://www.google.com/maps/place/Estadio+Centenario+-+C.A.+Sarmiento+de+Resistencia/@-27.4426378,-59.0133138,17z/data=!3m1!4b1!4m6!3m5!1s0x94450c783ef7a051:0xcd239a4a8f9ad665!8m2!3d-27.4426378!4d-59.0107389!16s%2Fg%2F1tfcv9pc!5m1!1e4" target="_blank" rel="noopener">📍 Estadio Centenario · Ver mapa</a></div>
 <div id="pitch"></div>
 <dialog id="dlg"><b id="dt"></b>
 <div class="pre" id="pre"></div>
