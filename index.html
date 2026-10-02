@@ -16,13 +16,13 @@ nav button.on{background:linear-gradient(135deg,var(--gold),#c98f10);color:#111}
 #pitch.v{width:min(100%,calc((100dvh - 110px)*68/95));aspect-ratio:68/95;background:repeating-linear-gradient(0deg,#1a6b34 0 9%,#1d7538 9% 18%)}
 .ln{position:absolute;border:2px solid #ffffff66;pointer-events:none}
 .p{position:absolute;transform:translate(-50%,-50%);cursor:pointer;display:flex;flex-direction:column;align-items:center;width:11%;max-width:84px;min-width:48px}
-.v .p{width:17%;max-width:90px}.g .p{width:11%;min-width:0}.v.g .p{width:12%}.g .nm{font-size:clamp(6px,1.9vw,11px);padding:0 2px}.g .pos{font-size:7px;padding:0 2px;top:-4px;right:-2px}.g .av{border-width:2px}.v.g .tag{font-size:13px}.p .w{width:100%}
+.v .p{width:17%;max-width:90px}.g .p{width:11%;min-width:0}.v.g .p{width:12%}.g .nm{font-size:clamp(6px,1.9vw,11px);padding:0 2px}.g .pos{font-size:clamp(9px,1.25vw,14px);padding:1px 4px;top:-5px;right:-8px;box-shadow:0 1px 4px #000a}.g .av{border-width:2px}.v.g .tag{font-size:13px}.p .w{width:100%}
 .av{width:100%;aspect-ratio:1;border-radius:50%;border:3px solid var(--c);background:#16161c center/cover;box-shadow:0 3px 10px #000a;display:grid;place-items:center;overflow:hidden;transition:transform .15s}
 .p:hover .av{transform:scale(1.1)}
 .av svg{width:70%;fill:var(--c);opacity:.8}
 .nm{width:max-content;max-width:170%;margin-top:3px;background:linear-gradient(#e8e8ee,#aaa);color:#111;font:800 clamp(8px,1.4vw,12px)/1.5 inherit;text-transform:uppercase;letter-spacing:.5px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nm.e{opacity:.6}
-.pos{position:absolute;top:-6px;right:-4px;background:var(--c);font:800 9px inherit;padding:1px 4px;border-radius:3px}
+.pos{position:absolute;top:-6px;right:-4px;background:var(--c);color:#fff;font:800 clamp(10px,1.6vw,14px) inherit;padding:1px 5px;border-radius:4px;box-shadow:0 1px 4px #000a}
 .p .w{position:relative}
 .tag{position:absolute;top:8px;font:800 clamp(12px,2vw,20px) inherit;letter-spacing:2px;text-transform:uppercase;font-style:italic}
 dialog{margin:auto;background:#14141a;color:#fff;border:2px solid var(--gold);padding:22px;width:min(92vw,320px);text-align:center}
@@ -75,7 +75,7 @@ function render(){pitch.innerHTML="";
   line("left:0;right:0;top:50%;border-width:2px 0 0");line("left:50%;top:50%;width:26%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%)");
   line("left:22%;right:22%;bottom:0;height:12%");line("left:22%;right:22%;top:0;height:12%");
   pitch.insertAdjacentHTML("beforeend",`<span class="tag" style="left:8px;top:6px;color:var(--t2)">Equipo 2</span><span class="tag" style="left:8px;top:auto;bottom:6px;color:var(--t1)">Equipo 1</span>`);
-  for(let t=0;t<2;t++)S[t].forEach((_,i)=>{const x=V[i][0],yy=[94,82,70,59][i?i<5?1:i<8?2:3:0];pl(t,i,t?100-x:x,t?100-yy:yy,1)})}
+  for(let t=0;t<2;t++)S[t].forEach((_,i)=>{const x=V[i][0],yy=[95,83,71,57][i?i<5?1:i<8?2:3:0];pl(t,i,t?100-x:x,t?100-yy:yy,1)})}
  else if(view=="g"){pitch.className="h g";
   line("left:50%;top:0;bottom:0;border-width:0 0 0 2px");line("left:50%;top:50%;width:18%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%)");
   [0,1].forEach(t=>{const s=t?"right":"left";line(`${s}:0;top:22%;height:56%;width:15%`);line(`${s}:0;top:36%;height:28%;width:5%`)});
