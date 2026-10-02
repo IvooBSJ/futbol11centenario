@@ -350,7 +350,7 @@ dialog{
   box-shadow:0 12px 40px #000e;
 }
 dialog::backdrop{background:rgba(0,0,0,0.85);backdrop-filter:blur(4px)}
-dialog.ro #save,dialog.ro #mv,dialog.ro label,dialog.ro #fb,dialog.ro #cap-box{display:none}
+dialog.ro #save,dialog.ro #mv,dialog.ro label,dialog.ro #fb,dialog.ro #cap-box,dialog.ro #del{display:none !important}
 dialog select{
   width:100%;
   padding:9px;
@@ -609,7 +609,6 @@ dialog input[type=text]{
   <label id="lbl-pos" style="font-size:11px;color:#999;letter-spacing:1px">POSICIÓN</label>
   <select id="mv"></select>
   <button class="b ok" id="save">Guardar</button>
-  <button class="b no dan" id="del">Borrar</button>
   <button class="b no" id="cls">✕ Cerrar</button>
 </dialog>
 
@@ -776,7 +775,8 @@ function setSlotData(t,i,data){
 }
 function isMine(t,i){
   const p=getSlotData(t,i);
-  return !p.n || !p.o || p.o===me;
+  if(!p.n)return true; // libre: cualquiera puede anotarse
+  return !!(p.o && p.o===me); // ocupado: solo quien lo anotó originalmente
 }
 
 // Aplicar datos recibidos de DB o Realtime
@@ -1036,7 +1036,7 @@ function openModal(t,i){
 
   if(t===2){
     // Árbitro
-    $("dt").textContent="⚖️ ÁRBITRO OFICIAL";
+    $("dt").innerHTML="⚖️ ÁRBITRO OFICIAL" + (!mine?`<br><small style="color:var(--gold);font-size:11px">🔒 Lugar ocupado por ${escapeHtml(p.n||"otro usuario")}</small>`:"");
     $("cap-box").style.display="none";
     $("lbl-pos").style.display="none";
     $("mv").style.display="none";
@@ -1048,11 +1048,8 @@ function openModal(t,i){
     $("inp-cap").checked=!!p.c;
     $("inp-cap").disabled=!mine;
 
-    if(i>=11){
-      $("dt").textContent=`EQUIPO ${t+1} · SUPLENTE ${i-10}`;
-    }else{
-      $("dt").textContent=`EQUIPO ${t+1} · ${POS[i]}`;
-    }
+    const baseTitle=i>=11?`EQUIPO ${t+1} · SUPLENTE ${i-10}`:`EQUIPO ${t+1} · ${POS[i]}`;
+    $("dt").innerHTML=baseTitle + (!mine?`<br><small style="color:var(--gold);font-size:11px">🔒 Lugar ocupado por ${escapeHtml(p.n||"otro jugador")}</small>`:"");
 
     // Opciones para mover / intercambiar posición
     let opts="";
@@ -1156,9 +1153,12 @@ async function putPlayer(t,i,n,f,isCap){
     subs[t].forEach(x=>{if(x)x.c=false});
   }
 
-  if(n===""){
-    setSlotData(t,i,{});
-  }else if(t2===t&&i2===i){
+  if(!n){
+    alert("Por favor ingresá un nombre para guardar.");
+    return;
+  }
+
+  if(t2===t&&i2===i){
     setSlotData(t,i,{n,f,o:me,c:isCap});
   }else{
     // Intercambiar posición
@@ -1180,23 +1180,13 @@ async function putPlayer(t,i,n,f,isCap){
 
 $("save").onclick=()=>{
   const n=$("inp").value.trim().slice(0,20);
-  const isCap=$("inp-cap").checked;
-  putPlayer(cur[0],cur[1],n,photo,isCap);
-};
-
-$("del").onclick=()=>{
-  if(!isMine(cur[0],cur[1])&&!confirm("Este lugar lo cargó otra persona. ¿Borrarlo igual?"))return;
-  if(cur[0]===2){
-    referee={n:"",f:"",o:""};
-    saveRef();
-    renderBench();
-    $("dlg").close();
-    wrOnline(2,0,"","",false);
+  if(!n){
+    alert("Por favor ingresá un nombre para guardar.");
+    $("inp").focus();
     return;
   }
-  $("mv").value=cur[0]+"_"+cur[1];
-  $("inp-cap").checked=false;
-  putPlayer(cur[0],cur[1],"","",false);
+  const isCap=$("inp-cap").checked;
+  putPlayer(cur[0],cur[1],n,photo,isCap);
 };
 
 $("cls").onclick=()=>$("dlg").close();

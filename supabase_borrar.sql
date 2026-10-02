@@ -1,11 +1,15 @@
--- Cualquiera puede BORRAR el slot de otro; solo el dueño puede EDITARLO.
+-- Nadie puede BORRAR un jugador cargado. Solo el dueño puede EDITARLO.
 create or replace function public.set_owner() returns trigger language plpgsql as $$
 declare h text := encode(sha256(convert_to(coalesce(current_setting('request.headers', true)::json->>'x-owner',''), 'utf8')), 'hex');
 begin
-  if new.name = '' then            -- borrar: libre para todos
-    new.owner := null;
-    new.photo := null;
-  elsif old.owner is null or old.owner = h then   -- tomar slot libre / editar el propio
+  -- Bloquear borrado de jugadores
+  if old.name is not null and old.name != '' and (new.name is null or trim(new.name) = '') then
+    return null;
+  end if;
+
+  if old.owner is null or old.name is null or old.name = '' then
+    new.owner := h;
+  elsif old.owner = h then
     new.owner := h;
   else
     return null;                    -- editar slot ajeno: se ignora
