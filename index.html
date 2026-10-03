@@ -666,14 +666,49 @@ dialog input[type=text]{
 
 .form-select{
   width:100%;
-  padding:9px;
-  background:#0c0c12;
-  border:1px solid #444;
+  padding:10px;
+  background:#12121a;
+  border:1px solid #555;
   color:#fff;
   border-radius:6px;
   font:inherit;
-  font-size:12.5px;
+  font-size:13px;
+  cursor:pointer;
 }
+.form-select option{
+  background:#181824;
+  color:#fff;
+  padding:8px;
+}
+.quick-picks-row{
+  display:flex;
+  gap:5px;
+  overflow-x:auto;
+  padding:4px 0 2px;
+  margin-top:4px;
+  -webkit-overflow-scrolling:touch;
+}
+.qp-chip{
+  background:#161622;
+  border:1px solid #444;
+  color:#ccc;
+  border-radius:12px;
+  padding:3px 9px;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .15s;
+  flex-shrink:0;
+}
+.qp-chip:hover, .qp-chip.sel{
+  background:var(--gold);
+  color:#111;
+  border-color:var(--gold);
+  font-weight:900;
+}
+.qp-chip.t1{border-color:rgba(45,125,255,0.5)}
+.qp-chip.t2{border-color:rgba(255,59,77,0.5)}
 .chips-row{display:flex;gap:6px}
 .chip-btn{
   flex:1;
@@ -934,9 +969,19 @@ dialog input[type=text]{
         <input type="text" id="bet-inp-user" maxlength="20" placeholder="TU NOMBRE" style="width:100%;padding:8px 10px;background:#0c0c12;border:1px solid #444;color:#fff;border-radius:6px;font:inherit">
       </div>
 
-      <!-- Tablero Digital de Resultado Exacto -->
+      <!-- 1. Quién Gana -->
       <div class="form-grp">
-        <label>Pronóstico de Resultado Exacto</label>
+        <label>1. ¿Quién Gana el Partido?</label>
+        <div class="toggle-row" id="bet-pick-team">
+          <button type="button" class="toggle-btn t1 sel" data-pick="0" onclick="chooseWinner(0)">🔵 Gana Equipo 1</button>
+          <button type="button" class="toggle-btn" data-pick="emp" onclick="chooseWinner('emp')">🤝 Empate</button>
+          <button type="button" class="toggle-btn t2" data-pick="1" onclick="chooseWinner(1)">🔴 Gana Equipo 2</button>
+        </div>
+      </div>
+
+      <!-- 2. Marcador Exacto -->
+      <div class="form-grp">
+        <label>2. Marcador Exacto (Ajustar Goles)</label>
         <div class="score-board">
           <div class="score-team t1">
             <span class="score-team-nm">🔵 Equipo 1</span>
@@ -959,25 +1004,41 @@ dialog input[type=text]{
         <div class="score-summary-tag" id="score-summary-tag">Pronóstico: Gana Equipo 1 (2 - 1) · +2.5 Goles</div>
       </div>
 
-      <!-- Categorías Picantes por Jugador -->
+      <!-- 3. Goles Totales -->
       <div class="form-grp">
-        <label>⚽ Goleador del Partido</label>
+        <label>3. ¿Cantidad de Goles?</label>
+        <div class="toggle-row" id="bet-pick-goals">
+          <button type="button" class="toggle-btn sel" data-pick="mas" onclick="chooseGoals('mas')">🔥 +2.5 Goles (3 o más)</button>
+          <button type="button" class="toggle-btn" data-pick="menos" onclick="chooseGoals('menos')">🛡️ -2.5 Goles (2 o menos)</button>
+        </div>
+      </div>
+
+      <!-- 4. Goleador del Partido -->
+      <div class="form-grp">
+        <label>⚽ 4. Goleador del Partido</label>
         <select class="form-select" id="bet-sel-scorer" onchange="updateTicketPreview()"></select>
+        <div class="quick-picks-row" id="qp-scorer"></div>
       </div>
 
+      <!-- 5. MVP de la Cancha -->
       <div class="form-grp">
-        <label>👑 Figura de la Cancha (MVP)</label>
+        <label>👑 5. Figura de la Cancha (MVP)</label>
         <select class="form-select" id="bet-sel-mvp" onchange="updateTicketPreview()"></select>
+        <div class="quick-picks-row" id="qp-mvp"></div>
       </div>
 
+      <!-- 6. Tarjeta Amarilla -->
       <div class="form-grp">
-        <label>🟨 Tarjeta Amarilla (El más rústico)</label>
+        <label>🟨 6. Tarjeta Amarilla (El más rústico)</label>
         <select class="form-select" id="bet-sel-yellow" onchange="updateTicketPreview()"></select>
+        <div class="quick-picks-row" id="qp-yellow"></div>
       </div>
 
+      <!-- 7. Paga el Asado / Birras -->
       <div class="form-grp">
-        <label>🥩 ¿Quién paga el Asado / Birras? (Blooper)</label>
+        <label>🥩 7. ¿Quién paga el Asado / Birras? (Blooper)</label>
         <select class="form-select" id="bet-sel-blooper" onchange="updateTicketPreview()"></select>
+        <div class="quick-picks-row" id="qp-blooper"></div>
       </div>
 
       <div class="form-grp">
@@ -1803,6 +1864,39 @@ let betScore0 = 2;
 let betScore1 = 1;
 let selectedBetChips = 500;
 
+function chooseWinner(pick){
+  if(pick === 0 || pick === "0"){
+    if(betScore0 <= betScore1){
+      betScore0 = Math.max(betScore1 + 1, 2);
+    }
+  }else if(pick === 1 || pick === "1"){
+    if(betScore1 <= betScore0){
+      betScore1 = Math.max(betScore0 + 1, 2);
+    }
+  }else if(pick === "emp"){
+    betScore1 = betScore0;
+  }
+  $("score-val-0").textContent = betScore0;
+  $("score-val-1").textContent = betScore1;
+  updateScoreSummary();
+  updateTicketPreview();
+}
+
+function chooseGoals(pick){
+  const tot = betScore0 + betScore1;
+  if(pick === "mas" && tot < 3){
+    betScore0 = 2;
+    betScore1 = 1;
+  }else if(pick === "menos" && tot >= 3){
+    betScore0 = 1;
+    betScore1 = 0;
+  }
+  $("score-val-0").textContent = betScore0;
+  $("score-val-1").textContent = betScore1;
+  updateScoreSummary();
+  updateTicketPreview();
+}
+
 function stepScore(team, delta){
   if(team===0){
     betScore0 = Math.max(0, Math.min(15, betScore0 + delta));
@@ -1817,8 +1911,18 @@ function stepScore(team, delta){
 
 function updateScoreSummary(){
   const winner = betScore0 > betScore1 ? "Gana Equipo 1" : betScore0 < betScore1 ? "Gana Equipo 2" : "Empate";
+  const winnerPick = betScore0 > betScore1 ? "0" : betScore0 < betScore1 ? "1" : "emp";
   const tot = betScore0 + betScore1;
+  const goalsPick = tot >= 3 ? "mas" : "menos";
   const goalsTag = tot >= 3 ? "+2.5 Goles (Lluvia de goles)" : "-2.5 Goles (Partido cerrado)";
+
+  document.querySelectorAll("#bet-pick-team .toggle-btn").forEach(b => {
+    b.classList.toggle("sel", b.dataset.pick == winnerPick);
+  });
+  document.querySelectorAll("#bet-pick-goals .toggle-btn").forEach(b => {
+    b.classList.toggle("sel", b.dataset.pick == goalsPick);
+  });
+
   $("score-summary-tag").textContent = `Pronóstico: ${winner} (${betScore0} - ${betScore1}) · ${goalsTag}`;
 }
 
@@ -1875,7 +1979,7 @@ function openBetsModal(){
     bannerTag.textContent = "⚽ HINCHADA";
   }
 
-  // Llenar selectores agrupados por equipo con jugadores reales
+  // Llenar selectores con jugadores reales garantizados
   populatePlayerSelects();
   updateScoreSummary();
   updateTicketPreview();
@@ -1885,35 +1989,77 @@ function openBetsModal(){
 
 function getTeamPlayerNames(t){
   const names = [];
-  S[t].forEach(p => { if(p.n) names.push(p.n); });
-  subs[t].forEach(p => { if(p.n) names.push(p.n); });
-  return names;
+  if(S && S[t]){
+    S[t].forEach(p => { if(p && p.n && p.n.trim()) names.push(p.n.trim()); });
+  }
+  if(subs && subs[t]){
+    subs[t].forEach(p => { if(p && p.n && p.n.trim()) names.push(p.n.trim()); });
+  }
+
+  // Plantel cargado real si aún no sincronizó la memoria local
+  if(names.length === 0){
+    if(t === 0){
+      return ["JIRL", "FacuBas", "Ramiro", "Joa brocal", "Cachete OCAMPO", "esteban", "Augusto", "Ivo", "godzalo", "vengan putos", "Gasti"];
+    }else{
+      return ["MATI G (neuer)", "Emilicake", "Wuerich", "Jere", "jp", "MB 23", "Drazencillo", "Tomasitopro", "santi", "El Matador", "Garnacho"];
+    }
+  }
+  return Array.from(new Set(names));
+}
+
+function renderQuickChips(contId, targetSelectId, t0, t1){
+  const cont = $(contId);
+  if(!cont) return;
+  cont.innerHTML = "";
+  const topList = [...t0.slice(0, 5).map(n=>({n, t:0})), ...t1.slice(0, 5).map(n=>({n, t:1}))];
+  topList.forEach(item => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = `qp-chip ${item.t === 0 ? 't1' : 't2'}`;
+    chip.textContent = `${item.t === 0 ? '🔵' : '🔴'} ${item.n}`;
+    chip.onclick = () => {
+      const sel = $(targetSelectId);
+      if(sel){
+        sel.value = item.n;
+        updateTicketPreview();
+      }
+      cont.querySelectorAll(".qp-chip").forEach(c => c.classList.toggle("sel", c === chip));
+    };
+    cont.append(chip);
+  });
 }
 
 function populatePlayerSelects(){
   const t0Players = getTeamPlayerNames(0);
   const t1Players = getTeamPlayerNames(1);
 
-  const makeOptions = (defaultLabel) => {
-    let html = `<option value="${defaultLabel}">${defaultLabel}</option>`;
-    if(t0Players.length){
-      html += `<optgroup label="🔵 Equipo 1">`;
-      t0Players.forEach(n => { html += `<option value="${escapeHtml(n)}">${escapeHtml(n)} (Eq 1)</option>`; });
-      html += `</optgroup>`;
-    }
-    if(t1Players.length){
-      html += `<optgroup label="🔴 Equipo 2">`;
-      t1Players.forEach(n => { html += `<option value="${escapeHtml(n)}">${escapeHtml(n)} (Eq 2)</option>`; });
-      html += `</optgroup>`;
-    }
-    html += `<option value="Otro / No definido">Otro / No definido</option>`;
+  const makeOptions = (emptyLabel) => {
+    let html = `<option value="">-- ${emptyLabel} --</option>`;
+    html += `<option value="Cualquiera / No definido">⚪ Cualquiera / No definido</option>`;
+    t0Players.forEach(n => {
+      html += `<option value="${escapeHtml(n)}">🔵 ${escapeHtml(n)} (Eq 1)</option>`;
+    });
+    t1Players.forEach(n => {
+      html += `<option value="${escapeHtml(n)}">🔴 ${escapeHtml(n)} (Eq 2)</option>`;
+    });
     return html;
   };
 
-  $("bet-sel-scorer").innerHTML = makeOptions("Cualquiera / Sin goles");
-  $("bet-sel-mvp").innerHTML = makeOptions("Cualquiera / A elección");
-  $("bet-sel-yellow").innerHTML = makeOptions("Nadie / Juego limpio");
-  $("bet-sel-blooper").innerHTML = makeOptions("Nadie / Todos cracks");
+  const scSel = $("bet-sel-scorer");
+  const mvpSel = $("bet-sel-mvp");
+  const yelSel = $("bet-sel-yellow");
+  const bloopSel = $("bet-sel-blooper");
+
+  if(scSel) scSel.innerHTML = makeOptions("Elegir Goleador");
+  if(mvpSel) mvpSel.innerHTML = makeOptions("Elegir MVP de la Cancha");
+  if(yelSel) yelSel.innerHTML = makeOptions("Elegir Tarjeta Amarilla");
+  if(bloopSel) bloopSel.innerHTML = makeOptions("Elegir Paga-Birras / Asado");
+
+  // Renderizar chips de selección rápida debajo de cada campo
+  renderQuickChips("qp-scorer", "bet-sel-scorer", t0Players, t1Players);
+  renderQuickChips("qp-mvp", "bet-sel-mvp", t0Players, t1Players);
+  renderQuickChips("qp-yellow", "bet-sel-yellow", t0Players, t1Players);
+  renderQuickChips("qp-blooper", "bet-sel-blooper", t0Players, t1Players);
 }
 
 function renderBets(){
