@@ -204,14 +204,13 @@ nav button.on{
 #pitch.v{width:min(100%,calc((100dvh - 190px)*68/95));aspect-ratio:68/95;background:repeating-linear-gradient(0deg,#1a6b34 0 9%,#1d7538 9% 18%)}
 .ln{position:absolute;border:2px solid #ffffff66;pointer-events:none}
 .p{position:absolute;transform:translate(-50%,-50%);cursor:pointer;display:flex;flex-direction:column;align-items:center;width:11%;max-width:84px;min-width:48px}
-.v .p{width:17%;max-width:90px}.g .p{width:11%;min-width:0}.v.g .p{width:12%}.g .nm{font-size:clamp(6px,1.9vw,11px);padding:0 2px}.g .pos{font-size:clamp(9px,1.25vw,14px);padding:1px 4px;top:-5px;right:-8px;box-shadow:0 1px 4px #000a}.g .av{border-width:2px}.v.g .tag{font-size:13px}.p .w{width:100%}
+.v .p{width:17%;max-width:90px}.g .p{width:11%;min-width:0}.v.g .p{width:12%}.g .nm{font-size:clamp(6px,1.9vw,11px);padding:0 2px}.g .pos{font-size:clamp(9px,1.25vw,14px);padding:1px 4px;top:-5px;right:-8px;box-shadow:0 1px 4px #000a}.g .av{border-width:2px}.v.g .tag{font-size:13px}.p .w{width:100%;position:relative}
 .av{width:100%;aspect-ratio:1;border-radius:50%;border:3px solid var(--c);background:#16161c center/cover;box-shadow:0 3px 10px #000a;display:grid;place-items:center;overflow:hidden;transition:transform .15s}
 .p:hover .av{transform:scale(1.1)}
 .av svg{width:70%;fill:var(--c);opacity:.8}
 .nm{width:max-content;max-width:260%;margin-top:3px;background:linear-gradient(#e8e8ee,#aaa);color:#111;font:800 clamp(8px,1.4vw,12px)/1.5 inherit;text-transform:uppercase;letter-spacing:.5px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nm.e{opacity:.6}
 .pos{position:absolute;top:-6px;right:-4px;background:var(--c);color:#fff;font:800 clamp(10px,1.6vw,14px) inherit;padding:1px 5px;border-radius:4px;box-shadow:0 1px 4px #000a}
-.p .w{position:relative}
 .tag{position:absolute;top:8px;font:800 clamp(12px,2vw,20px) inherit;letter-spacing:2px;text-transform:uppercase;font-style:italic}
 
 /* Captain badge */
@@ -535,7 +534,7 @@ dialog input[type=text]{
 .chat-item-user{font-weight:800;color:var(--gold)}
 .chat-item-tag{font-size:9px;padding:1px 5px;border-radius:4px;background:#333;color:#ccc;text-transform:uppercase}
 .chat-item-time{color:#777;font-size:10px;margin-left:auto}
-.chat-item-text{font-size:13px;color:#eee;margin-top:2px;word-break:break-word}
+.chat-item-text{font-size:13px;color:#eee;margin-top:2px;overflow-wrap:anywhere}
 .chat-emojis{display:flex;gap:4px;overflow-x:auto;padding:4px 0;margin-bottom:6px}
 .chat-emojis button{background:#1e1e2c;border:1px solid #333;border-radius:6px;padding:4px 8px;font-size:14px;cursor:pointer}
 .chat-input-row{display:flex;gap:6px;margin-top:4px}
@@ -956,7 +955,7 @@ dialog input[type=text]{
 .bet-actions{display:flex;gap:6px;margin-top:8px;align-items:center;justify-content:flex-end}
 .btn-wa{
   background:#25D366;
-  color:#fff;
+  color:#0c2912;
   border:0;
   border-radius:6px;
   padding:4px 8px;

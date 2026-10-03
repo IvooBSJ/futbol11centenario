@@ -401,15 +401,37 @@ function renderBench(){
     slot.className="b-slot";
     slot.style.setProperty("--c","var(--gold)");
     slot.style.width="90px";
-    slot.innerHTML=`
-      <div class="b-slot-w" style="width:50px;height:50px">
-        <div class="b-slot-av" ${referee.f?`style="background-image:url(&quot;${escapeHtml(safePhoto(referee.f))}&quot;)"`:""}>
-          ${referee.f?"":`<span style="font-size:22px">🟨</span>`}
-        </div>
-        <span class="b-slot-pos" style="background:#ffd700;color:#111">REF</span>
-      </div>
-      <div class="b-slot-nm ${referee.n?"":"e"}" style="max-width:100%">${escapeHtml(referee.n)||"+ Asignar Árbitro"}</div>
-    `;
+
+    const wrapper=document.createElement("div");
+    wrapper.className="b-slot-w";
+    wrapper.style.width="50px";
+    wrapper.style.height="50px";
+
+    const av=document.createElement("div");
+    av.className="b-slot-av";
+    const safeRefPhoto=safePhoto(referee.f);
+    if(safeRefPhoto){
+      av.style.backgroundImage=`url(${JSON.stringify(safeRefPhoto)})`;
+    }else{
+      const icon=document.createElement("span");
+      icon.style.fontSize="22px";
+      icon.textContent="🟨";
+      av.append(icon);
+    }
+
+    const pos=document.createElement("span");
+    pos.className="b-slot-pos";
+    pos.style.background="#ffd700";
+    pos.style.color="#111";
+    pos.textContent="REF";
+    wrapper.append(av,pos);
+
+    const nm=document.createElement("div");
+    nm.className=`b-slot-nm ${referee.n?"":"e"}`;
+    nm.style.maxWidth="100%";
+    nm.textContent=referee.n||"+ Asignar Árbitro";
+
+    slot.append(wrapper,nm);
     slot.onclick=()=>openModal(2,0);
     refCont.append(slot);
   }
@@ -612,7 +634,7 @@ function updateNote(forceFresh=false){
 
   const bubble=$("ig-note");
   bubble.style.animation="none";
-  bubble.offsetHeight; // trigger reflow
+  bubble.getBoundingClientRect(); // trigger reflow
   bubble.style.animation="notePop .35s cubic-bezier(0.175,0.885,0.32,1.275)";
 
   $("ig-note-author").textContent=msg.author;
@@ -730,7 +752,7 @@ async function sendChatMessage(){
 }
 
 $("chat-send").onclick=sendChatMessage;
-$("chat-inp-msg").onkeydown=e=>{if(e.key==="Enter")sendChatMessage()};
+$("chat-inp-msg").onkeydown=e=>{if(e.key==="Enter")void sendChatMessage()};
 
 // ==================== APUESTAS & PRODE PERSONALIZADO ====================
 $("btn-bets").onclick=()=>openBetsModal();
@@ -1285,8 +1307,8 @@ function safePhoto(photo){
 betsList=canonicalBets(betsList);
 refreshViews();
 addEventListener('resize',()=>{if(!$('dlg').open)render()});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
-addEventListener('online',()=>sync());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)void sync()});
+addEventListener('online',()=>void sync());
 addEventListener('offline',()=>connectionStatus('Sin conexión',true));
-setInterval(()=>{if(!document.hidden)sync()},20000);
-identityReady.then(()=>{render();renderBets();startRealtime();sync()}).catch(error=>connectionStatus('Acceso no disponible',true,error.message));
+setInterval(()=>{if(!document.hidden)void sync()},20000);
+identityReady.then(()=>{render();renderBets();startRealtime();void sync();}).catch(error=>connectionStatus('Acceso no disponible',true,error.message));

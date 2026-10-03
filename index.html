@@ -281,7 +281,7 @@
         <div class="bet-ticket-row"><span>🪙 Fichas:</span><b id="ticket-chips" style="color:var(--gold)">🪙 500 pts</b></div>
       </div>
 
-      <p id="bet-feedback" class="form-feedback" role="status"></p><button type="button" class="b ok" id="bet-btn-submit" style="width:100%;padding:11px;font-size:13.5px;letter-spacing:1px;margin:6px 0 0">
+      <output id="bet-feedback" class="form-feedback"></output><button type="button" class="b ok" id="bet-btn-submit" style="width:100%;padding:11px;font-size:13.5px;letter-spacing:1px;margin:6px 0 0">
         Guardar mi pronóstico ↗
       </button>
     </div>
@@ -322,9 +322,9 @@
   <p class="form-help">Este navegador recuerda los lugares y el Prode que cargaste. Guardá tu código privado para poder editarlos desde otro celular.</p>
   <button type="button" class="b ok" id="access-copy">Copiar mi código de acceso</button>
   <hr><label for="access-code">¿Ya tenés un código?</label><input type="text" id="access-code" autocomplete="off" spellcheck="false" placeholder="Pegá tu código privado">
-  <p class="form-help">Usá solo tu propio código. Al recuperarlo, este navegador pasa a usar ese acceso.</p><p id="access-feedback" class="form-feedback" role="alert"></p>
+  <p class="form-help">Usá solo tu propio código. Al recuperarlo, este navegador pasa a usar ese acceso.</p><output id="access-feedback" class="form-feedback"></output>
   <button type="button" class="b no" id="access-restore">Recuperar mi acceso</button>
 </dialog>
-<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2"></script>
+<output id="toast" class="toast" aria-live="polite" hidden></output>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2" integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF" crossorigin="anonymous"></script>
 <script src="app.js" defer></script></body></html>
