@@ -680,35 +680,225 @@ dialog input[type=text]{
   color:#fff;
   padding:8px;
 }
-.quick-picks-row{
-  display:flex;
-  gap:5px;
-  overflow-x:auto;
-  padding:4px 0 2px;
-  margin-top:4px;
-  -webkit-overflow-scrolling:touch;
+.stat-card{
+  background:#13131f;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;
+  padding:10px;
+  margin-bottom:10px;
+  transition:all .2s;
 }
-.qp-chip{
-  background:#161622;
+.stat-card.has-selection{
+  border-color:rgba(245,197,66,0.45);
+  background:rgba(22,22,34,0.96);
+  box-shadow:0 0 10px rgba(245,197,66,0.08);
+}
+.stat-card-hdr{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:6px;
+}
+.stat-card-title{
+  font-size:12px;
+  font-weight:800;
+  color:#fff;
+  letter-spacing:.3px;
+}
+.stat-card-sub{
+  font-size:10px;
+  color:#888;
+  margin-top:1px;
+}
+.stat-card-sel-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#0c0c14;
+  border:1px solid #2d2d3f;
+  border-radius:6px;
+  padding:5px 8px;
+  margin-bottom:6px;
+}
+.stat-sel-badge{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:11.5px;
+  font-weight:700;
+  color:#eee;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  max-width:65%;
+}
+.stat-sel-actions{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.btn-stat-clear{
+  background:transparent;
+  border:none;
+  color:#888;
+  font-size:10.5px;
+  font-weight:700;
+  cursor:pointer;
+  padding:2px 4px;
+  transition:color .15s;
+}
+.btn-stat-clear:hover{color:#ff5555}
+.btn-stat-modal{
+  background:#1e1e2c;
   border:1px solid #444;
-  color:#ccc;
+  color:#ddd;
+  font-size:10.5px;
+  font-weight:700;
+  border-radius:4px;
+  padding:3px 7px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.btn-stat-modal:hover{background:var(--gold);color:#111;border-color:var(--gold)}
+.stat-chips-box{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.stat-team-row{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.stat-team-chip-lbl{
+  font-size:10px;
+  font-weight:900;
+  width:42px;
+  flex-shrink:0;
+}
+.stat-team-chip-lbl.t1{color:var(--t1)}
+.stat-team-chip-lbl.t2{color:var(--t2)}
+.stat-team-chips{
+  display:flex;
+  gap:4px;
+  overflow-x:auto;
+  padding:2px 0;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.stat-team-chips::-webkit-scrollbar{display:none}
+.stat-pill{
+  background:#181826;
+  border:1px solid #36364a;
+  color:#bbb;
   border-radius:12px;
-  padding:3px 9px;
-  font-size:11px;
+  padding:3px 8px;
+  font-size:10.5px;
   font-weight:700;
   cursor:pointer;
   white-space:nowrap;
-  transition:all .15s;
   flex-shrink:0;
+  transition:all .15s;
 }
-.qp-chip:hover, .qp-chip.sel{
+.stat-pill:hover{color:#fff;border-color:#666}
+.stat-pill.t1{border-color:rgba(45,125,255,0.4)}
+.stat-pill.t2{border-color:rgba(255,59,77,0.4)}
+.stat-pill.sel{
   background:var(--gold);
   color:#111;
   border-color:var(--gold);
   font-weight:900;
+  box-shadow:0 0 8px rgba(245,197,66,0.35);
 }
-.qp-chip.t1{border-color:rgba(45,125,255,0.5)}
-.qp-chip.t2{border-color:rgba(255,59,77,0.5)}
+
+/* Modal Selector de Jugador Full */
+#dlg-player-picker{
+  max-width:440px;
+  width:92%;
+  background:#141420;
+  border:1.5px solid var(--gold);
+  border-radius:12px;
+  padding:14px;
+  color:#fff;
+  box-shadow:0 10px 30px rgba(0,0,0,0.8);
+}
+.picker-modal-hdr{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:10px;
+}
+.picker-modal-title{font-size:14px;font-weight:900;color:var(--gold)}
+.picker-modal-sub{font-size:11px;color:#aaa;margin-top:2px}
+.picker-search-wrap{margin-bottom:10px}
+.picker-search-wrap input{
+  width:100%;
+  padding:9px 12px;
+  background:#0c0c14;
+  border:1px solid #444;
+  border-radius:8px;
+  color:#fff;
+  font:inherit;
+  font-size:12.5px;
+}
+.picker-tabs{
+  display:flex;
+  gap:6px;
+  margin-bottom:10px;
+}
+.picker-tab{
+  flex:1;
+  background:#1c1c28;
+  border:1px solid #333;
+  color:#ccc;
+  padding:6px;
+  border-radius:6px;
+  font:800 11px inherit;
+  cursor:pointer;
+  transition:all .15s;
+}
+.picker-tab.sel{background:var(--gold);color:#111;border-color:var(--gold);font-weight:900}
+.picker-list{
+  max-height:48dvh;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  padding-right:2px;
+}
+.picker-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#1a1a28;
+  border:1px solid #333;
+  border-radius:8px;
+  padding:8px 12px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.picker-item:hover{background:#242436;border-color:var(--gold)}
+.picker-item.t1{border-left:4px solid var(--t1)}
+.picker-item.t2{border-left:4px solid var(--t2)}
+.picker-item-name{font-size:12px;font-weight:800;color:#fff}
+.picker-item-tag{font-size:10px;font-weight:700;color:#888}
+.picker-footer{
+  margin-top:12px;
+  text-align:center;
+}
+.btn-picker-none{
+  width:100%;
+  padding:8px;
+  background:#20202e;
+  border:1px solid #444;
+  color:#ccc;
+  border-radius:6px;
+  font:800 11.5px inherit;
+  cursor:pointer;
+}
+.btn-picker-none:hover{background:#2a2a3e;color:#fff}
+.sr-only-select{display:none}
+
 .chips-row{display:flex;gap:6px}
 .chip-btn{
   flex:1;
@@ -942,11 +1132,23 @@ dialog input[type=text]{
           <div class="podio-card-val" id="stat-mvp">-</div>
         </div>
         <div class="podio-card">
+          <div class="podio-card-title">🛡️ Muralla (Defensor)</div>
+          <div class="podio-card-val" id="stat-defender">-</div>
+        </div>
+        <div class="podio-card">
+          <div class="podio-card-title">🧤 Guante de Oro (Arquero)</div>
+          <div class="podio-card-val" id="stat-keeper">-</div>
+        </div>
+        <div class="podio-card">
+          <div class="podio-card-title">🪄 Varita Mágica (Asistencia/Caño)</div>
+          <div class="podio-card-val" id="stat-assist">-</div>
+        </div>
+        <div class="podio-card">
           <div class="podio-card-title">🟨 Hacha de Oro (Amarilla)</div>
           <div class="podio-card-val" id="stat-card">-</div>
         </div>
-        <div class="podio-card">
-          <div class="podio-card-title">🥩 Paga el Asado / Birras</div>
+        <div class="podio-card" style="grid-column:1/-1">
+          <div class="podio-card-title">🥩 Paga el Asado / Blooper</div>
           <div class="podio-card-val" id="stat-blooper">-</div>
         </div>
       </div>
@@ -961,7 +1163,7 @@ dialog input[type=text]{
     <div class="bet-form">
       <div class="bet-form-title">
         <span>🎯 Armá tu Boleta</span>
-        <small style="color:#888;font-size:10px">¡Acertá y quedás como rey!</small>
+        <small style="color:#888;font-size:10px">¡Tocá un jugador directo o buscalo!</small>
       </div>
 
       <div class="form-grp">
@@ -1013,35 +1215,12 @@ dialog input[type=text]{
         </div>
       </div>
 
-      <!-- 4. Goleador del Partido -->
-      <div class="form-grp">
-        <label>⚽ 4. Goleador del Partido</label>
-        <select class="form-select" id="bet-sel-scorer" onchange="updateTicketPreview()"></select>
-        <div class="quick-picks-row" id="qp-scorer"></div>
+      <!-- Estadísticas y Premios Individuales con Selector Visual de 1 Toque -->
+      <div id="stat-cards-container">
+        <!-- Generado dinámicamente: Goleador, MVP, Mejor Defensor, Mejor Arquero, Asistencia/Caño, Amarilla, Paga Asado -->
       </div>
 
-      <!-- 5. MVP de la Cancha -->
-      <div class="form-grp">
-        <label>👑 5. Figura de la Cancha (MVP)</label>
-        <select class="form-select" id="bet-sel-mvp" onchange="updateTicketPreview()"></select>
-        <div class="quick-picks-row" id="qp-mvp"></div>
-      </div>
-
-      <!-- 6. Tarjeta Amarilla -->
-      <div class="form-grp">
-        <label>🟨 6. Tarjeta Amarilla (El más rústico)</label>
-        <select class="form-select" id="bet-sel-yellow" onchange="updateTicketPreview()"></select>
-        <div class="quick-picks-row" id="qp-yellow"></div>
-      </div>
-
-      <!-- 7. Paga el Asado / Birras -->
-      <div class="form-grp">
-        <label>🥩 7. ¿Quién paga el Asado / Birras? (Blooper)</label>
-        <select class="form-select" id="bet-sel-blooper" onchange="updateTicketPreview()"></select>
-        <div class="quick-picks-row" id="qp-blooper"></div>
-      </div>
-
-      <div class="form-grp">
+      <div class="form-grp" style="margin-top:10px">
         <label>Fichas Virtuales a Jugar</label>
         <div class="chips-row" id="bet-pick-chips">
           <button type="button" class="chip-btn" data-val="100">🪙 100</button>
@@ -1055,9 +1234,15 @@ dialog input[type=text]{
       <div class="bet-ticket" id="bet-ticket">
         <div class="bet-ticket-title">🎟️ TICKET DE APUESTA CENTENARIO</div>
         <div class="bet-ticket-row"><span>Marcador:</span><b id="ticket-score">Eq 1 [2] - [1] Eq 2</b></div>
-        <div class="bet-ticket-row"><span>Goleador:</span><b id="ticket-scorer">Cualquiera</b></div>
-        <div class="bet-ticket-row"><span>MVP:</span><b id="ticket-mvp">Cualquiera</b></div>
-        <div class="bet-ticket-row"><span>Fichas:</span><b id="ticket-chips" style="color:var(--gold)">🪙 500 pts</b></div>
+        <div class="bet-ticket-row"><span>Goles:</span><b id="ticket-goals">+2.5 Goles 🔥</b></div>
+        <div class="bet-ticket-row"><span>⚽ Goleador:</span><b id="ticket-scorer">Cualquiera</b></div>
+        <div class="bet-ticket-row"><span>👑 Figura MVP:</span><b id="ticket-mvp">Cualquiera</b></div>
+        <div class="bet-ticket-row"><span>🛡️ Defensor:</span><b id="ticket-defender">Cualquiera</b></div>
+        <div class="bet-ticket-row"><span>🧤 Arquero:</span><b id="ticket-keeper">Cualquiera</b></div>
+        <div class="bet-ticket-row"><span>🪄 Asistencia:</span><b id="ticket-assist">Cualquiera</b></div>
+        <div class="bet-ticket-row"><span>🟨 Amarilla:</span><b id="ticket-yellow">Nadie</b></div>
+        <div class="bet-ticket-row"><span>🥩 Paga Asado:</span><b id="ticket-blooper">Nadie</b></div>
+        <div class="bet-ticket-row"><span>🪙 Fichas:</span><b id="ticket-chips" style="color:var(--gold)">🪙 500 pts</b></div>
       </div>
 
       <button type="button" class="b ok" id="bet-btn-submit" style="width:100%;padding:11px;font-size:13.5px;letter-spacing:1px;margin:6px 0 0">
@@ -1070,6 +1255,29 @@ dialog input[type=text]{
       <div class="stats-title">📋 Boletas de los Pibes (<span id="bets-count">0</span>)</div>
       <div id="bets-list"></div>
     </div>
+  </div>
+</dialog>
+
+<!-- Modal Selector Rápido de Jugadores con Buscador -->
+<dialog id="dlg-player-picker" class="modal-md">
+  <div class="picker-modal-hdr">
+    <div>
+      <div class="picker-modal-title" id="picker-title">⚽ Elegir Jugador</div>
+      <div class="picker-modal-sub" id="picker-sub">Tocá un jugador para seleccionarlo</div>
+    </div>
+    <button type="button" class="btn-close" onclick="$('dlg-player-picker').close()">✕</button>
+  </div>
+  <div class="picker-search-wrap">
+    <input type="text" id="picker-search-inp" placeholder="🔍 Escribí el nombre del jugador..." oninput="filterPickerPlayers()">
+  </div>
+  <div class="picker-tabs">
+    <button type="button" class="picker-tab sel" data-tab="all" onclick="setPickerTab('all')">Todos (<span id="picker-cnt-all">0</span>)</button>
+    <button type="button" class="picker-tab" data-tab="0" onclick="setPickerTab('0')">🔵 Equipo 1</button>
+    <button type="button" class="picker-tab" data-tab="1" onclick="setPickerTab('1')">🔴 Equipo 2</button>
+  </div>
+  <div class="picker-list" id="picker-list"></div>
+  <div class="picker-footer">
+    <button type="button" class="btn-picker-none" onclick="selectPickerPlayer('')">⚪ Cualquiera / Sin definir</button>
   </div>
 </dialog>
 
@@ -1160,6 +1368,51 @@ const saveRef=()=>{try{localStorage.setItem(K_REF,JSON.stringify(referee))}catch
 const saveChat=()=>{try{localStorage.setItem(K_CHAT,JSON.stringify(chatMessages))}catch(e){}};
 const saveBets=()=>{try{localStorage.setItem(K_BETS,JSON.stringify(betsList))}catch(e){}};
 
+// Parser universal para boletas con compatibilidad total
+function mapBetRow(b){
+  if(!b) return null;
+  let s0 = 2, s1 = 1, winnerPick = "0";
+  let mvp = "", defender = "", keeper = "", assist = "", blooper = "";
+  if(b.team_pick && typeof b.team_pick === "string" && b.team_pick.trim().startsWith("{")){
+    try {
+      const p = JSON.parse(b.team_pick);
+      s0 = p.s0 ?? 2;
+      s1 = p.s1 ?? 1;
+      winnerPick = p.pick ?? (s0 > s1 ? "0" : (s0 < s1 ? "1" : "emp"));
+      mvp = p.mvp || "";
+      defender = p.defender || "";
+      keeper = p.keeper || "";
+      assist = p.assist || "";
+      blooper = p.blooper || "";
+    }catch(e){}
+  } else if(b.team_pick){
+    const m = String(b.team_pick).match(/(\d+)\s*-\s*(\d+)/);
+    if(m){ s0 = parseInt(m[1]); s1 = parseInt(m[2]); }
+    else if(b.team_pick === "0"){ s0 = 2; s1 = 1; }
+    else if(b.team_pick === "1"){ s0 = 1; s1 = 2; }
+    else if(b.team_pick === "emp"){ s0 = 1; s1 = 1; }
+    winnerPick = s0 > s1 ? "0" : (s0 < s1 ? "1" : "emp");
+  }
+  return {
+    id: b.id,
+    user: b.user_name || b.user || "Anónimo",
+    s0,
+    s1,
+    team_pick: winnerPick,
+    total_goals: b.total_goals || ((s0 + s1) >= 3 ? "mas" : "menos"),
+    scorer: b.scorer || "",
+    mvp: mvp || b.mvp || "",
+    defender: defender || b.defender || "",
+    keeper: keeper || b.keeper || "",
+    assist: assist || b.assist || "",
+    yellow_card: b.yellow_card || "",
+    blooper: blooper || b.blooper || "",
+    amount: b.amount || 500,
+    time: b.created_at || b.time || new Date().toISOString(),
+    owner: b.owner || ""
+  };
+}
+
 // Supabase sync
 async function sync(){
   if(!db)return;
@@ -1179,7 +1432,7 @@ async function sync(){
   try{
     const{data:bets}=await db.from("bets").select("*").order("created_at",{ascending:false});
     if(bets&&bets.length){
-      betsList=bets.map(b=>({id:b.id,user:b.user_name,team_pick:b.team_pick,total_goals:b.total_goals,scorer:b.scorer,yellow_card:b.yellow_card,amount:b.amount,time:b.created_at,owner:b.owner}));
+      betsList=bets.map(mapBetRow).filter(Boolean);
       saveBets();
     }
   }catch(e){}
@@ -1187,6 +1440,7 @@ async function sync(){
   render();
   renderChat();
   renderBets();
+  renderAllStatPickers();
   updateNote();
 }
 
@@ -1197,6 +1451,7 @@ if(db){
   db.channel("players_ch").on("postgres_changes",{event:"*",schema:"public",table:"players"},e=>{
     applyPlayerRow(e.new);
     render();
+    renderAllStatPickers();
   }).subscribe();
 
   // Postgres changes en chat_messages si existe
@@ -1228,7 +1483,8 @@ if(db){
     })
     .on("broadcast",{event:"new_bet"},payload=>{
       if(payload.bet&&!betsList.some(x=>x.id===payload.bet.id)){
-        betsList.unshift(payload.bet);
+        const mapped = mapBetRow(payload.bet);
+        if(mapped) betsList.unshift(mapped);
         saveBets();
         renderBets();
         render();
@@ -1243,6 +1499,7 @@ if(db){
     .on("broadcast",{event:"player_extra"},payload=>{
       applyPlayerRow(payload.row);
       render();
+      renderAllStatPickers();
     })
     .subscribe();
 }
@@ -1252,7 +1509,7 @@ async function syncBetsOnline(){
   try{
     const{data}=await db.from("bets").select("*").order("created_at",{ascending:false});
     if(data){
-      betsList=data.map(b=>({id:b.id,user:b.user_name,team_pick:b.team_pick,total_goals:b.total_goals,scorer:b.scorer,yellow_card:b.yellow_card,amount:b.amount,time:b.created_at,owner:b.owner}));
+      betsList=data.map(mapBetRow).filter(Boolean);
       saveBets();
       renderBets();
       render();
@@ -1264,11 +1521,11 @@ let view="g",cur=null,photo="";
 const $=id=>document.getElementById(id),pitch=$("pitch");
 const ic='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5"/><path d="M3 22c0-5 4-8 9-8s9 3 9 8z"/></svg>';
 
-// Helper para obtener todas las apuestas recibidas por un jugador
+// Helper para obtener todas las apuestas recibidas por un jugador (todas las categorías)
 function getPlayerBets(name){
-  if(!name) return { goals: 0, mvp: 0, cards: 0, bloopers: 0, list: [] };
+  if(!name) return { goals: 0, mvp: 0, defender: 0, keeper: 0, assist: 0, cards: 0, bloopers: 0, list: [] };
   const target = name.trim().toLowerCase();
-  let goals = 0, mvp = 0, cards = 0, bloopers = 0;
+  let goals = 0, mvp = 0, defender = 0, keeper = 0, assist = 0, cards = 0, bloopers = 0;
   const list = [];
 
   betsList.forEach(b => {
@@ -1287,13 +1544,25 @@ function getPlayerBets(name){
       mvp++;
       items.push(`👑 MVP`);
     }
+    if(checkMatch(b.defender)){
+      defender++;
+      items.push(`🛡️ Muralla`);
+    }
+    if(checkMatch(b.keeper)){
+      keeper++;
+      items.push(`🧤 Atajadón`);
+    }
+    if(checkMatch(b.assist)){
+      assist++;
+      items.push(`🪄 Asistencia/Caño`);
+    }
     if(checkMatch(b.yellow_card)){
       cards++;
       items.push(`🟨 Amarilla`);
     }
     if(checkMatch(b.blooper)){
       bloopers++;
-      items.push(`🥩 Paga birras`);
+      items.push(`🥩 Paga Asado`);
     }
 
     if(items.length > 0){
@@ -1308,7 +1577,7 @@ function getPlayerBets(name){
     }
   });
 
-  return { goals, mvp, cards, bloopers, list };
+  return { goals, mvp, defender, keeper, assist, cards, bloopers, list };
 }
 
 // Coordenadas cancha horizontal
@@ -1327,13 +1596,16 @@ function pl(t,i,x,y){
   // Badges de apuestas recibidas en la planilla
   const bData=getPlayerBets(p.n);
   let betsBadgeHtml="";
-  if(bData.goals>0||bData.mvp>0||bData.cards>0||bData.bloopers>0){
+  if(bData.goals>0||bData.mvp>0||bData.defender>0||bData.keeper>0||bData.assist>0||bData.cards>0||bData.bloopers>0){
     const parts=[];
     if(bData.goals>0) parts.push(`⚽ ${bData.goals}`);
     if(bData.mvp>0) parts.push(`👑`);
+    if(bData.defender>0) parts.push(`🛡️`);
+    if(bData.keeper>0) parts.push(`🧤`);
+    if(bData.assist>0) parts.push(`🪄`);
     if(bData.cards>0) parts.push(`🟨`);
     if(bData.bloopers>0) parts.push(`🥩`);
-    betsBadgeHtml=`<div class="p-bets-badge" title="${bData.goals} goles, ${bData.mvp} MVP, ${bData.cards} amarillas">${parts.join(" ")}</div>`;
+    betsBadgeHtml=`<div class="p-bets-badge" title="Pálpitos recibidos">${parts.join(" ")}</div>`;
   }
 
   d.innerHTML=`<div class="w">
@@ -1412,10 +1684,13 @@ function renderBench(){
       // Badge de apuestas en suplentes
       const bData=getPlayerBets(p.n);
       let betsBadgeHtml="";
-      if(bData.goals>0||bData.mvp>0||bData.cards>0||bData.bloopers>0){
+      if(bData.goals>0||bData.mvp>0||bData.defender>0||bData.keeper>0||bData.assist>0||bData.cards>0||bData.bloopers>0){
         const parts=[];
         if(bData.goals>0) parts.push(`⚽ ${bData.goals}`);
         if(bData.mvp>0) parts.push(`👑`);
+        if(bData.defender>0) parts.push(`🛡️`);
+        if(bData.keeper>0) parts.push(`🧤`);
+        if(bData.assist>0) parts.push(`🪄`);
         if(bData.cards>0) parts.push(`🟨`);
         if(bData.bloopers>0) parts.push(`🥩`);
         betsBadgeHtml=`<div class="b-bets-badge" title="Pálpitos">${parts.join(" ")}</div>`;
@@ -1508,8 +1783,11 @@ function openModal(t,i){
           $("dlg-bets-details").innerHTML = "";
         }else{
           const parts = [];
-          if(bData.goals > 0) parts.push(`<span class="bet-pill">⚽ ${bData.goals} ${bData.goals===1?'voto a Gol':'votos a Goles'}</span>`);
+          if(bData.goals > 0) parts.push(`<span class="bet-pill">⚽ ${bData.goals} ${bData.goals===1?'voto a Gol':'votos a Gol'}</span>`);
           if(bData.mvp > 0) parts.push(`<span class="bet-pill gold">👑 ${bData.mvp} ${bData.mvp===1?'voto a MVP':'votos a MVP'}</span>`);
+          if(bData.defender > 0) parts.push(`<span class="bet-pill" style="border-color:#4fc3f7">🛡️ ${bData.defender} ${bData.defender===1?'voto Defensor':'votos Defensor'}</span>`);
+          if(bData.keeper > 0) parts.push(`<span class="bet-pill" style="border-color:#81c784">🧤 ${bData.keeper} ${bData.keeper===1?'voto Arquero':'votos Arquero'}</span>`);
+          if(bData.assist > 0) parts.push(`<span class="bet-pill" style="border-color:#ba68c8">🪄 ${bData.assist} ${bData.assist===1?'voto Asistencia':'votos Asistencia'}</span>`);
           if(bData.cards > 0) parts.push(`<span class="bet-pill">🟨 ${bData.cards} ${bData.cards===1?'voto a Amarilla':'votos a Amarilla'}</span>`);
           if(bData.bloopers > 0) parts.push(`<span class="bet-pill" style="color:#ff8888">🥩 ${bData.bloopers} ${bData.bloopers===1?'voto Paga Birras':'votos Paga Birras'}</span>`);
           $("dlg-bets-summary").innerHTML = parts.join(" ");
@@ -1939,13 +2217,227 @@ function setupBetFormListeners(){
 }
 setupBetFormListeners();
 
+const STAT_CATEGORIES = [
+  { id: "scorer", icon: "⚽", title: "4. Goleador del Partido", sub: "Quién mete los goles o abre el marcador", defaultVal: "Cualquiera" },
+  { id: "mvp", icon: "👑", title: "5. Figura de la Cancha (MVP)", sub: "El crack y mejor jugador del partido", defaultVal: "Cualquiera" },
+  { id: "defender", icon: "🛡️", title: "6. Mejor Defensor (Muralla)", sub: "El candado que corta todo y no pasa nadie", defaultVal: "Cualquiera" },
+  { id: "keeper", icon: "🧤", title: "7. Mejor Arquero / Atajada Épica", sub: "La salvada heroica bajo los tres palos", defaultVal: "Cualquiera" },
+  { id: "assist", icon: "🪄", title: "8. Mejor Asistencia / Caño", sub: "El pase gol milimétrico o la jugada de lujo", defaultVal: "Cualquiera" },
+  { id: "yellow", icon: "🟨", title: "9. Tarjeta Amarilla (El más rústico)", sub: "La patada criminal o foul táctico", defaultVal: "Nadie" },
+  { id: "blooper", icon: "🥩", title: "10. Paga el Asado / Blooper", sub: "El blooper o gol errado insólito", defaultVal: "Nadie" },
+];
+
+const statSelections = {
+  scorer: "",
+  mvp: "",
+  defender: "",
+  keeper: "",
+  assist: "",
+  yellow: "",
+  blooper: ""
+};
+
+let currentPickerCatId = "scorer";
+let currentPickerTab = "all";
+
+function getTeamPlayerNames(t){
+  const names = [];
+  if(S && S[t]){
+    S[t].forEach(p => { if(p && p.n && p.n.trim()) names.push(p.n.trim()); });
+  }
+  if(subs && subs[t]){
+    subs[t].forEach(p => { if(p && p.n && p.n.trim()) names.push(p.n.trim()); });
+  }
+
+  const fallbackT0 = ["JIRL", "FacuBas", "Ramiro", "Joa brocal", "Cachete OCAMPO", "esteban", "Augusto", "Ivo", "godzalo", "vengan putos", "Gasti"];
+  const fallbackT1 = ["MATI G (neuer)", "Emilicake", "Wuerich", "Jere", "jp", "MB 23", "Drazencillo", "Tomasitopro", "santi", "El Matador", "Garnacho"];
+
+  if(names.length === 0){
+    return t === 0 ? fallbackT0 : fallbackT1;
+  }
+  const base = t === 0 ? fallbackT0 : fallbackT1;
+  base.forEach(b => { if(!names.includes(b)) names.push(b); });
+  return Array.from(new Set(names));
+}
+
+function setStatChoice(catId, playerName, teamIdx){
+  statSelections[catId] = playerName || "";
+  
+  const card = $(`card-stat-${catId}`);
+  const isDefault = !playerName || playerName.startsWith("Cualquiera") || playerName.startsWith("Nadie");
+  
+  const bName = $(`badge-name-${catId}`);
+  const bDot = $(`badge-dot-${catId}`);
+  if(bName){
+    if(isDefault){
+      bName.textContent = catId === 'yellow' || catId === 'blooper' ? 'Nadie' : 'Cualquiera';
+    }else{
+      bName.textContent = teamIdx === 0 ? `🔵 ${playerName}` : (teamIdx === 1 ? `🔴 ${playerName}` : playerName);
+    }
+  }
+  if(bDot){
+    bDot.textContent = isDefault ? '⚪' : (teamIdx === 0 ? '🔵' : (teamIdx === 1 ? '🔴' : '⭐'));
+  }
+  if(card){
+    card.classList.toggle("has-selection", !isDefault);
+    card.querySelectorAll(".stat-pill").forEach(p => {
+      p.classList.toggle("sel", p.dataset.player === playerName);
+    });
+  }
+
+  const sel = $(`bet-sel-${catId}`);
+  if(sel) sel.value = playerName;
+
+  updateTicketPreview();
+}
+
+function clearStatChoice(catId){
+  setStatChoice(catId, catId === 'yellow' || catId === 'blooper' ? 'Nadie' : 'Cualquiera');
+}
+
+function renderAllStatPickers(){
+  const container = $("stat-cards-container");
+  if(!container) return;
+
+  const t0Players = getTeamPlayerNames(0);
+  const t1Players = getTeamPlayerNames(1);
+
+  let html = "";
+  STAT_CATEGORIES.forEach(cat => {
+    const curVal = statSelections[cat.id] || "";
+    const isDef = !curVal || curVal.startsWith("Cualquiera") || curVal.startsWith("Nadie");
+    const displayVal = curVal || cat.defaultVal;
+
+    html += `
+      <div class="stat-card ${!isDef ? 'has-selection' : ''}" id="card-stat-${cat.id}">
+        <div class="stat-card-hdr">
+          <div>
+            <div class="stat-card-title">${cat.icon} ${cat.title}</div>
+            <div class="stat-card-sub">${cat.sub}</div>
+          </div>
+        </div>
+        <div class="stat-card-sel-row">
+          <div class="stat-sel-badge" id="badge-val-${cat.id}">
+            <span id="badge-dot-${cat.id}">${isDef ? '⚪' : '⭐'}</span>
+            <span id="badge-name-${cat.id}">${escapeHtml(displayVal)}</span>
+          </div>
+          <div class="stat-sel-actions">
+            <button type="button" class="btn-stat-clear" onclick="clearStatChoice('${cat.id}')">✕ Quitar</button>
+            <button type="button" class="btn-stat-modal" onclick="openFullPlayerPicker('${cat.id}')">🔍 Buscar</button>
+          </div>
+        </div>
+        <div class="stat-chips-box">
+          <div class="stat-team-row">
+            <span class="stat-team-chip-lbl t1">🔵 Eq 1</span>
+            <div class="stat-team-chips" id="chips-${cat.id}-0">
+              ${t0Players.map(name => `
+                <button type="button" class="stat-pill t1 ${curVal === name ? 'sel' : ''}" data-player="${escapeHtml(name)}" onclick="setStatChoice('${cat.id}', '${escapeHtml(name)}', 0)">
+                  ${escapeHtml(name)}
+                </button>
+              `).join("")}
+            </div>
+          </div>
+          <div class="stat-team-row">
+            <span class="stat-team-chip-lbl t2">🔴 Eq 2</span>
+            <div class="stat-team-chips" id="chips-${cat.id}-1">
+              ${t1Players.map(name => `
+                <button type="button" class="stat-pill t2 ${curVal === name ? 'sel' : ''}" data-player="${escapeHtml(name)}" onclick="setStatChoice('${cat.id}', '${escapeHtml(name)}', 1)">
+                  ${escapeHtml(name)}
+                </button>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+        <select id="bet-sel-${cat.id}" class="sr-only-select">
+          <option value="${cat.defaultVal}">${cat.defaultVal}</option>
+          ${t0Players.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)} (Eq 1)</option>`).join("")}
+          ${t1Players.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)} (Eq 2)</option>`).join("")}
+        </select>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function openFullPlayerPicker(catId){
+  currentPickerCatId = catId;
+  const cat = STAT_CATEGORIES.find(c => c.id === catId);
+  if(!cat) return;
+  
+  $("picker-title").textContent = `${cat.icon} ${cat.title}`;
+  $("picker-sub").textContent = cat.sub;
+  $("picker-search-inp").value = "";
+  setPickerTab("all");
+  $("dlg-player-picker").showModal();
+}
+
+function setPickerTab(tab){
+  currentPickerTab = tab;
+  document.querySelectorAll("#dlg-player-picker .picker-tab").forEach(b => {
+    b.classList.toggle("sel", b.dataset.tab === tab);
+  });
+  filterPickerPlayers();
+}
+
+function filterPickerPlayers(){
+  const query = ($("picker-search-inp").value || "").trim().toLowerCase();
+  const t0Players = getTeamPlayerNames(0).map(n => ({ n, t: 0, tag: "🔵 Equipo 1" }));
+  const t1Players = getTeamPlayerNames(1).map(n => ({ n, t: 1, tag: "🔴 Equipo 2" }));
+  
+  let all = [...t0Players, ...t1Players];
+  if(currentPickerTab === "0") all = t0Players;
+  else if(currentPickerTab === "1") all = t1Players;
+
+  if(query){
+    all = all.filter(p => p.n.toLowerCase().includes(query));
+  }
+
+  const cntAll = $("picker-cnt-all");
+  if(cntAll) cntAll.textContent = t0Players.length + t1Players.length;
+
+  const list = $("picker-list");
+  if(!list) return;
+
+  if(!all.length){
+    list.innerHTML = `<div style="text-align:center;color:#777;padding:20px;font-size:12px">No se encontraron jugadores que coincidan con la búsqueda.</div>`;
+    return;
+  }
+
+  list.innerHTML = all.map(p => `
+    <div class="picker-item ${p.t === 0 ? 't1' : 't2'}" onclick="selectPickerPlayer('${escapeHtml(p.n)}', ${p.t})">
+      <div class="picker-item-name">${p.t === 0 ? '🔵' : '🔴'} ${escapeHtml(p.n)}</div>
+      <div class="picker-item-tag">${p.tag}</div>
+    </div>
+  `).join("");
+}
+
+function selectPickerPlayer(name, teamIdx){
+  setStatChoice(currentPickerCatId, name, teamIdx);
+  $("dlg-player-picker").close();
+}
+
 function updateTicketPreview(){
   const sTag = $("ticket-score");
   if(sTag) sTag.textContent = `Eq 1 [${betScore0}] - [${betScore1}] Eq 2`;
-  const scSel = $("bet-sel-scorer");
-  if(scSel&&$("ticket-scorer")) $("ticket-scorer").textContent = scSel.value || "Cualquiera";
-  const mvpSel = $("bet-sel-mvp");
-  if(mvpSel&&$("ticket-mvp")) $("ticket-mvp").textContent = mvpSel.value || "Cualquiera";
+  
+  const goalsTag = $("ticket-goals");
+  const tot = betScore0 + betScore1;
+  if(goalsTag) goalsTag.textContent = tot >= 3 ? "+2.5 Goles 🔥" : "-2.5 Goles 🛡️";
+
+  const setRow = (id, val, def) => {
+    const el = $(`ticket-${id}`);
+    if(el) el.textContent = val || def;
+  };
+
+  setRow("scorer", statSelections.scorer, "Cualquiera");
+  setRow("mvp", statSelections.mvp, "Cualquiera");
+  setRow("defender", statSelections.defender, "Cualquiera");
+  setRow("keeper", statSelections.keeper, "Cualquiera");
+  setRow("assist", statSelections.assist, "Cualquiera");
+  setRow("yellow", statSelections.yellow, "Nadie");
+  setRow("blooper", statSelections.blooper, "Nadie");
+
   const cTag = $("ticket-chips");
   if(cTag) cTag.textContent = `🪙 ${selectedBetChips} pts`;
 }
@@ -1979,87 +2471,12 @@ function openBetsModal(){
     bannerTag.textContent = "⚽ HINCHADA";
   }
 
-  // Llenar selectores con jugadores reales garantizados
-  populatePlayerSelects();
+  // Llenar selectores visuales garantizados
+  renderAllStatPickers();
   updateScoreSummary();
   updateTicketPreview();
   renderBets();
   $("dlg-bets").showModal();
-}
-
-function getTeamPlayerNames(t){
-  const names = [];
-  if(S && S[t]){
-    S[t].forEach(p => { if(p && p.n && p.n.trim()) names.push(p.n.trim()); });
-  }
-  if(subs && subs[t]){
-    subs[t].forEach(p => { if(p && p.n && p.n.trim()) names.push(p.n.trim()); });
-  }
-
-  // Plantel cargado real si aún no sincronizó la memoria local
-  if(names.length === 0){
-    if(t === 0){
-      return ["JIRL", "FacuBas", "Ramiro", "Joa brocal", "Cachete OCAMPO", "esteban", "Augusto", "Ivo", "godzalo", "vengan putos", "Gasti"];
-    }else{
-      return ["MATI G (neuer)", "Emilicake", "Wuerich", "Jere", "jp", "MB 23", "Drazencillo", "Tomasitopro", "santi", "El Matador", "Garnacho"];
-    }
-  }
-  return Array.from(new Set(names));
-}
-
-function renderQuickChips(contId, targetSelectId, t0, t1){
-  const cont = $(contId);
-  if(!cont) return;
-  cont.innerHTML = "";
-  const topList = [...t0.slice(0, 5).map(n=>({n, t:0})), ...t1.slice(0, 5).map(n=>({n, t:1}))];
-  topList.forEach(item => {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = `qp-chip ${item.t === 0 ? 't1' : 't2'}`;
-    chip.textContent = `${item.t === 0 ? '🔵' : '🔴'} ${item.n}`;
-    chip.onclick = () => {
-      const sel = $(targetSelectId);
-      if(sel){
-        sel.value = item.n;
-        updateTicketPreview();
-      }
-      cont.querySelectorAll(".qp-chip").forEach(c => c.classList.toggle("sel", c === chip));
-    };
-    cont.append(chip);
-  });
-}
-
-function populatePlayerSelects(){
-  const t0Players = getTeamPlayerNames(0);
-  const t1Players = getTeamPlayerNames(1);
-
-  const makeOptions = (emptyLabel) => {
-    let html = `<option value="">-- ${emptyLabel} --</option>`;
-    html += `<option value="Cualquiera / No definido">⚪ Cualquiera / No definido</option>`;
-    t0Players.forEach(n => {
-      html += `<option value="${escapeHtml(n)}">🔵 ${escapeHtml(n)} (Eq 1)</option>`;
-    });
-    t1Players.forEach(n => {
-      html += `<option value="${escapeHtml(n)}">🔴 ${escapeHtml(n)} (Eq 2)</option>`;
-    });
-    return html;
-  };
-
-  const scSel = $("bet-sel-scorer");
-  const mvpSel = $("bet-sel-mvp");
-  const yelSel = $("bet-sel-yellow");
-  const bloopSel = $("bet-sel-blooper");
-
-  if(scSel) scSel.innerHTML = makeOptions("Elegir Goleador");
-  if(mvpSel) mvpSel.innerHTML = makeOptions("Elegir MVP de la Cancha");
-  if(yelSel) yelSel.innerHTML = makeOptions("Elegir Tarjeta Amarilla");
-  if(bloopSel) bloopSel.innerHTML = makeOptions("Elegir Paga-Birras / Asado");
-
-  // Renderizar chips de selección rápida debajo de cada campo
-  renderQuickChips("qp-scorer", "bet-sel-scorer", t0Players, t1Players);
-  renderQuickChips("qp-mvp", "bet-sel-mvp", t0Players, t1Players);
-  renderQuickChips("qp-yellow", "bet-sel-yellow", t0Players, t1Players);
-  renderQuickChips("qp-blooper", "bet-sel-blooper", t0Players, t1Players);
 }
 
 function renderBets(){
@@ -2072,13 +2489,13 @@ function renderBets(){
 
   if(!total){
     list.innerHTML = `<div style="text-align:center;color:#777;padding:16px;font-size:12px">Todavía nadie cargó su boleta.<br>¡Armá tu pronóstico y mostrale a los pibes quién sabe de fútbol! 🎯</div>`;
-    updateBetsOdds(0,0,0,0,{},{},{},{});
+    updateBetsOdds(0,0,0,0,{},{},{},{},{},{},{});
     return;
   }
 
   let t1Votes = 0, empVotes = 0, t2Votes = 0;
   let totalChips = 0;
-  const scorersCount = {}, mvpsCount = {}, cardsCount = {}, bloopersCount = {}, scoreCount = {};
+  const scorersCount = {}, mvpsCount = {}, defendersCount = {}, keepersCount = {}, assistsCount = {}, cardsCount = {}, bloopersCount = {}, scoreCount = {};
 
   betsList.forEach(b => {
     totalChips += (b.amount || 500);
@@ -2093,18 +2510,19 @@ function renderBets(){
     const scoreKey = `${s0} - ${s1}`;
     scoreCount[scoreKey] = (scoreCount[scoreKey] || 0) + 1;
 
-    if(b.scorer && !b.scorer.startsWith("Cualquiera") && !b.scorer.startsWith("Otro")){
-      scorersCount[b.scorer] = (scorersCount[b.scorer] || 0) + 1;
-    }
-    if(b.mvp && !b.mvp.startsWith("Cualquiera") && !b.mvp.startsWith("Otro")){
-      mvpsCount[b.mvp] = (mvpsCount[b.mvp] || 0) + 1;
-    }
-    if(b.yellow_card && !b.yellow_card.startsWith("Nadie") && !b.yellow_card.startsWith("Otro")){
-      cardsCount[b.yellow_card] = (cardsCount[b.yellow_card] || 0) + 1;
-    }
-    if(b.blooper && !b.blooper.startsWith("Nadie") && !b.blooper.startsWith("Otro")){
-      bloopersCount[b.blooper] = (bloopersCount[b.blooper] || 0) + 1;
-    }
+    const countStat = (map, val) => {
+      if(val && !val.startsWith("Cualquiera") && !val.startsWith("Nadie") && !val.startsWith("Otro")){
+        map[val] = (map[val] || 0) + 1;
+      }
+    };
+
+    countStat(scorersCount, b.scorer);
+    countStat(mvpsCount, b.mvp);
+    countStat(defendersCount, b.defender);
+    countStat(keepersCount, b.keeper);
+    countStat(assistsCount, b.assist);
+    countStat(cardsCount, b.yellow_card);
+    countStat(bloopersCount, b.blooper);
 
     // Render tarjeta de apuesta
     const card = document.createElement("div");
@@ -2128,6 +2546,9 @@ function renderBets(){
         <span class="bet-pill">${winnerText}</span>
         ${b.scorer && !b.scorer.startsWith("Cualquiera") ? `<span class="bet-pill">⚽ Gol: ${escapeHtml(b.scorer)}</span>` : ""}
         ${b.mvp && !b.mvp.startsWith("Cualquiera") ? `<span class="bet-pill gold">👑 MVP: ${escapeHtml(b.mvp)}</span>` : ""}
+        ${b.defender && !b.defender.startsWith("Cualquiera") ? `<span class="bet-pill" style="border-color:#4fc3f7">🛡️ Defensor: ${escapeHtml(b.defender)}</span>` : ""}
+        ${b.keeper && !b.keeper.startsWith("Cualquiera") ? `<span class="bet-pill" style="border-color:#81c784">🧤 Arquero: ${escapeHtml(b.keeper)}</span>` : ""}
+        ${b.assist && !b.assist.startsWith("Cualquiera") ? `<span class="bet-pill" style="border-color:#ba68c8">🪄 Asistencia: ${escapeHtml(b.assist)}</span>` : ""}
         ${b.yellow_card && !b.yellow_card.startsWith("Nadie") ? `<span class="bet-pill">🟨 Amarilla: ${escapeHtml(b.yellow_card)}</span>` : ""}
         ${b.blooper && !b.blooper.startsWith("Nadie") ? `<span class="bet-pill" style="border-color:#ff555544;color:#ff8888">🥩 Paga birras: ${escapeHtml(b.blooper)}</span>` : ""}
       </div>
@@ -2141,7 +2562,7 @@ function renderBets(){
     list.append(card);
   });
 
-  updateBetsOdds(t1Votes, empVotes, t2Votes, totalChips, scorersCount, mvpsCount, cardsCount, bloopersCount, scoreCount);
+  updateBetsOdds(t1Votes, empVotes, t2Votes, totalChips, scorersCount, mvpsCount, defendersCount, keepersCount, assistsCount, cardsCount, bloopersCount, scoreCount);
 }
 
 function getTopKey(obj){
@@ -2152,7 +2573,7 @@ function getTopKey(obj){
   return top;
 }
 
-function updateBetsOdds(t1, emp, t2, chips, scorers, mvps, cards, bloopers, scores){
+function updateBetsOdds(t1, emp, t2, chips, scorers, mvps, defenders, keepers, assists, cards, bloopers, scores){
   const totalVotes = t1 + emp + t2;
   const p1 = totalVotes ? Math.round((t1/totalVotes)*100) : 33;
   const pe = totalVotes ? Math.round((emp/totalVotes)*100) : 34;
@@ -2167,6 +2588,9 @@ function updateBetsOdds(t1, emp, t2, chips, scorers, mvps, cards, bloopers, scor
 
   $("stat-scorer").textContent = getTopKey(scorers);
   $("stat-mvp").textContent = getTopKey(mvps);
+  if($("stat-defender")) $("stat-defender").textContent = getTopKey(defenders);
+  if($("stat-keeper")) $("stat-keeper").textContent = getTopKey(keepers);
+  if($("stat-assist")) $("stat-assist").textContent = getTopKey(assists);
   $("stat-card").textContent = getTopKey(cards);
   $("stat-blooper").textContent = getTopKey(bloopers);
 
@@ -2188,6 +2612,17 @@ $("bet-btn-submit").onclick=async()=>{
   const winnerPick = betScore0 > betScore1 ? "0" : (betScore0 < betScore1 ? "1" : "emp");
   const goalsPick = (betScore0 + betScore1) >= 3 ? "mas" : "menos";
 
+  const extraData = {
+    s0: betScore0,
+    s1: betScore1,
+    pick: winnerPick,
+    mvp: statSelections.mvp || "",
+    defender: statSelections.defender || "",
+    keeper: statSelections.keeper || "",
+    assist: statSelections.assist || "",
+    blooper: statSelections.blooper || ""
+  };
+
   const newBet = {
     id: crypto.randomUUID ? crypto.randomUUID() : Date.now() + "_" + Math.random(),
     user,
@@ -2195,10 +2630,13 @@ $("bet-btn-submit").onclick=async()=>{
     s1: betScore1,
     team_pick: winnerPick,
     total_goals: goalsPick,
-    scorer: $("bet-sel-scorer").value,
-    mvp: $("bet-sel-mvp").value,
-    yellow_card: $("bet-sel-yellow").value,
-    blooper: $("bet-sel-blooper").value,
+    scorer: statSelections.scorer || "",
+    mvp: statSelections.mvp || "",
+    defender: statSelections.defender || "",
+    keeper: statSelections.keeper || "",
+    assist: statSelections.assist || "",
+    yellow_card: statSelections.yellow || "",
+    blooper: statSelections.blooper || "",
     amount: selectedBetChips,
     time: new Date().toISOString(),
     owner: me
@@ -2217,7 +2655,7 @@ $("bet-btn-submit").onclick=async()=>{
       await db.from("bets").insert([{
         id: newBet.id,
         user_name: newBet.user,
-        team_pick: `${betScore0}-${betScore1} (${newBet.team_pick})`,
+        team_pick: JSON.stringify(extraData),
         total_goals: newBet.total_goals,
         scorer: newBet.scorer,
         yellow_card: newBet.yellow_card,
@@ -2243,13 +2681,17 @@ window.shareBetWhatsApp=(id)=>{
 
   const s0 = b.s0 !== undefined ? b.s0 : (b.team_pick === "0" ? 2 : 1);
   const s1 = b.s1 !== undefined ? b.s1 : (b.team_pick === "1" ? 2 : 1);
+  const goalsTag = (s0 + s1) >= 3 ? "+2.5 Goles 🔥" : "-2.5 Goles 🛡️";
 
   const text = `🏆 *MI PRODE CENTENARIO - ${b.user}* ⚽🔥\n` +
-    `🏟️ Resultado: 🔵 Eq 1 [ ${s0} ] - [ ${s1} ] Eq 2 🔴\n` +
-    (b.scorer && !b.scorer.startsWith("Cualquiera") ? `⚽ Gol: ${b.scorer}\n` : "") +
-    (b.mvp && !b.mvp.startsWith("Cualquiera") ? `👑 MVP del partido: ${b.mvp}\n` : "") +
+    `🏟️ Resultado: 🔵 Eq 1 [ ${s0} ] - [ ${s1} ] Eq 2 🔴 (${goalsTag})\n` +
+    (b.scorer && !b.scorer.startsWith("Cualquiera") ? `⚽ Goleador: ${b.scorer}\n` : "") +
+    (b.mvp && !b.mvp.startsWith("Cualquiera") ? `👑 MVP: ${b.mvp}\n` : "") +
+    (b.defender && !b.defender.startsWith("Cualquiera") ? `🛡️ Mejor Defensor: ${b.defender}\n` : "") +
+    (b.keeper && !b.keeper.startsWith("Cualquiera") ? `🧤 Mejor Arquero: ${b.keeper}\n` : "") +
+    (b.assist && !b.assist.startsWith("Cualquiera") ? `🪄 Asistencia / Caño: ${b.assist}\n` : "") +
     (b.yellow_card && !b.yellow_card.startsWith("Nadie") ? `🟨 Amarilla: ${b.yellow_card}\n` : "") +
-    (b.blooper && !b.blooper.startsWith("Nadie") ? `🥩 Paga las birras/asado: ${b.blooper}\n` : "") +
+    (b.blooper && !b.blooper.startsWith("Nadie") ? `🥩 Paga Asado/Blooper: ${b.blooper}\n` : "") +
     `🪙 Fichas en juego: ${b.amount || 500} pts\n` +
     `¿Quién se anima a ganarme? ¡Armá el tuyo! 🎯👇`;
 
@@ -2286,10 +2728,14 @@ window.deleteBet=async(id)=>{
 };
 
 // Inicialización de vista y resize
-[$("dlg"), $("dlg-chat"), $("dlg-bets")].forEach(d => {
-  d.addEventListener("click", e => { if(e.target === d) d.close(); });
+[$("dlg"), $("dlg-chat"), $("dlg-bets"), $("dlg-player-picker")].forEach(d => {
+  if(d) d.addEventListener("click", e => { if(e.target === d) d.close(); });
 });
 render();
+renderAllStatPickers();
 updateNote();
 addEventListener("resize",()=>{if(!$("dlg").open)render()});
+document.addEventListener("DOMContentLoaded",()=>{
+  renderAllStatPickers();
+});
 </script></body></html>
